@@ -1,3 +1,5 @@
+using NexusGroup.Api.References;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -7,6 +9,8 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+Reference.AddPositionDepedency(builder.Services, builder.Configuration);
+Reference.AddDBDependency(builder.Services, builder.Configuration);
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

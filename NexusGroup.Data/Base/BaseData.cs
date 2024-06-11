@@ -9,7 +9,10 @@ namespace NexusGroup.Data.Base
 {
     public class BaseData
     {
-
+        public BaseData()
+        {
+            this.isDeleted = false;
+        }
         public DateTime createdRegistration { get; set; }
         public DateTime updatedRegistration { get; set; }
         public bool isDeleted { get; set; }

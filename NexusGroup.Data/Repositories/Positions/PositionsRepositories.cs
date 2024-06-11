@@ -4,16 +4,17 @@ using System.Collections.Generic;
 using System.Data;
 using Dapper;
 using System.Data.SqlClient;
+using NexusGroup.Data.Base;
 
 
 namespace NexusGroup.Data.Repositories.Positions
 {
     public class PositionsRepositories : IPositionsRepositories
     {
-        public string _connectionString;
-        public PositionsRepositories(string connectionString)
+        private readonly IDapperDBConnection _dbConnection;
+        public PositionsRepositories(IDapperDBConnection dbConnection)
         {
-            this._connectionString = connectionString;
+            this._dbConnection = dbConnection;
         }
         public Task Add(PositionsModels entity)
         {
@@ -27,7 +28,7 @@ namespace NexusGroup.Data.Repositories.Positions
 
         public async Task<IEnumerable<PositionsModels>> GetAll()
         {
-            using (IDbConnection db = new SqlConnection(_connectionString))
+            using (IDbConnection db = _dbConnection.CreateConnection()) 
             {
                 return await db.QueryAsync<PositionsModels>("getAllPositions", commandType: CommandType.StoredProcedure);
             }
