@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NexusGroup.Data.Base;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -7,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace NexusGroup.Data.Models
 {
-    public class PositionsModels
+    public class PositionsModels: BaseData
     {
         [Key]
         public int positionID { get; set; }

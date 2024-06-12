@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using NexusGroup.Service.DTOs.Position;
 using NexusGroup.Service.Services.Positions;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -35,8 +36,18 @@ namespace NexusGroup.Api.Controllers
 
         // POST api/<PositionController>
         [HttpPost]
-        public void Post([FromBody] string value)
+        public async Task<IActionResult> Post([FromBody] AddPosition position)
         {
+            if (position == null)
+            {
+                return BadRequest("Position data is null");
+            }
+            var result = await _positionsService.Save(position);
+            if (!result.Success)
+            {
+                return BadRequest(result);
+            }
+            return Ok(result);
         }
 
         // PUT api/<PositionController>/5

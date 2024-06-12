@@ -16,9 +16,15 @@ namespace NexusGroup.Data.Repositories.Positions
         {
             this._dbConnection = dbConnection;
         }
-        public Task Add(PositionsModels entity)
+        public async Task Add(PositionsModels entity)
         {
-            throw new NotImplementedException();
+            using(IDbConnection db = _dbConnection.CreateConnection())
+            {
+                var parameters = new DynamicParameters();
+                parameters.Add("@Name", entity.name, DbType.String, ParameterDirection.Input);
+
+                await db.ExecuteAsync("addPositions", parameters, commandType: CommandType.StoredProcedure);
+            }
         }
 
         public Task Delete(int id)

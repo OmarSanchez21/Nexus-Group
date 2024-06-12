@@ -10,8 +10,5 @@ namespace NexusGroup.Service.Core
     {
         Task<ServiceResult>GetAll();
         Task<ServiceResult> GetValue(int id);
-        Task<ServiceResult> Save(T obj);
-        Task<ServiceResult> Update(T obj);
-        Task<ServiceResult> Delete(int id);
     }
 }

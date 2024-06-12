@@ -1,6 +1,8 @@
 ﻿using NexusGroup.Data.Models;
 using NexusGroup.Data.Repositories.Positions;
 using NexusGroup.Service.Core;
+using NexusGroup.Service.DTOs.Position;
+using NexusGroup.Service.Extention;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
@@ -48,12 +50,29 @@ namespace NexusGroup.Service.Services.Positions
             throw new NotImplementedException();
         }
 
-        public Task<ServiceResult> Save(PositionsModels obj)
+        public async Task<ServiceResult> Save(AddPosition obj)
         {
-            throw new NotImplementedException();
+            var result = new ServiceResult();
+            try
+            {
+                PositionsModels models = obj.GetPositionEntity();
+                await this.repositories.Add(models);
+                result.Message = "Positions saved successfully";
+            }
+            catch(SqlException ex)
+            {
+                result.Success = false;
+                result.Message = "Sql Error: " + ex.Message;
+            }
+            catch (Exception ex)
+            {
+                result.Success = false;
+                result.Message = "Internal Error: " + ex.Message;
+            }
+            return result;
         }
 
-        public Task<ServiceResult> Update(PositionsModels obj)
+        public Task<ServiceResult> Update(UpdatePosition obj)
         {
             throw new NotImplementedException();
         }
