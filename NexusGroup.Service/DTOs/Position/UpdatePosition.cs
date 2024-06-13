@@ -8,7 +8,12 @@ namespace NexusGroup.Service.DTOs.Position
 {
     public class UpdatePosition
     {
-        public string namme { get; set; }
+        public UpdatePosition()
+        {
+            this.updatedRegistration = DateTime.Now;
+        }
+        public int Id { get; set; }
+        public string name { get; set; }
         public DateTime updatedRegistration { get; set; }
     }
 }

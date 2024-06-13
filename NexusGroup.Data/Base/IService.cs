@@ -13,6 +13,7 @@ namespace NexusGroup.Data.Base
         Task<T> GetByName(string name);
         Task Add(T entity);
         Task Delete(int id);
+        Task Remove(int id);
         Task Update(T entity);
     }
 }

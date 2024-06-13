@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using NexusGroup.Service.DTOs.Position;
 using NexusGroup.Service.Services.Positions;
-
+using Swashbuckle.AspNetCore.Annotations;
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace NexusGroup.Api.Controllers
@@ -17,6 +17,7 @@ namespace NexusGroup.Api.Controllers
         }
         // GET: api/<PositionController>
         [HttpGet]
+        [SwaggerOperation(Summary = "Get All Position", Description = "Adds a new position to the database")]
         public async Task<IActionResult>Getll()
         {
             var result = await _positionsService.GetAll();
@@ -40,7 +41,7 @@ namespace NexusGroup.Api.Controllers
         {
             if (position == null)
             {
-                return BadRequest("Position data is null");
+                return NotFound("Position data is null");
             }
             var result = await _positionsService.Save(position);
             if (!result.Success)
@@ -51,15 +52,35 @@ namespace NexusGroup.Api.Controllers
         }
 
         // PUT api/<PositionController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        [HttpPut]
+        public async Task<IActionResult> Put([FromBody] UpdatePosition update)
         {
+            if(update == null)
+            {
+                return NotFound("Position data is null");
+            }
+            var result = await _positionsService.Update(update);
+            if (!result.Success)
+            {
+                return BadRequest(result);
+            }
+            return Ok(result);
         }
 
         // DELETE api/<PositionController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Delete(int id)
         {
+            if(id == 0)
+            {
+                return NotFound("The Id is not can be zero");
+            }
+            var result = await _positionsService.Delete(id);
+            if (!result.Success)
+            {
+                return BadRequest(result);
+            }
+            return Ok(result);
         }
     }
 }

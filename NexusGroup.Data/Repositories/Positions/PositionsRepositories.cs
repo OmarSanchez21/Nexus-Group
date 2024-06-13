@@ -18,23 +18,33 @@ namespace NexusGroup.Data.Repositories.Positions
         }
         public async Task Add(PositionsModels entity)
         {
-            using(IDbConnection db = _dbConnection.CreateConnection())
+            using (IDbConnection db = _dbConnection.CreateConnection())
             {
-                var parameters = new DynamicParameters();
-                parameters.Add("@Name", entity.name, DbType.String, ParameterDirection.Input);
-
+                var parameters = new { Name = entity.name };
                 await db.ExecuteAsync("addPositions", parameters, commandType: CommandType.StoredProcedure);
             }
         }
 
-        public Task Delete(int id)
+        public async Task Delete(int id)
         {
-            throw new NotImplementedException();
+            using (IDbConnection db = _dbConnection.CreateConnection())
+            {
+                var parameters = new { Id = id };
+                await db.ExecuteAsync("deletePosition", parameters, commandType: CommandType.StoredProcedure);
+            }
+        }
+        public async Task Remove(int id)
+        {
+            using (IDbConnection db = _dbConnection.CreateConnection())
+            {
+                var parameters = new { Id = id };
+                await db.ExecuteAsync("deletePosition", parameters, commandType: CommandType.StoredProcedure);
+            }
         }
 
         public async Task<IEnumerable<PositionsModels>> GetAll()
         {
-            using (IDbConnection db = _dbConnection.CreateConnection()) 
+            using (IDbConnection db = _dbConnection.CreateConnection())
             {
                 return await db.QueryAsync<PositionsModels>("getAllPositions", commandType: CommandType.StoredProcedure);
             }
@@ -50,9 +60,13 @@ namespace NexusGroup.Data.Repositories.Positions
             throw new NotImplementedException();
         }
 
-        public Task Update(PositionsModels entity)
+        public async Task Update(PositionsModels entity)
         {
-            throw new NotImplementedException();
+            using (IDbConnection db = _dbConnection.CreateConnection())
+            {
+                var parameters = new { Id = entity.positionID, Name = entity.name, UpdateDate = entity.updatedRegistration };
+                await db.ExecuteAsync("editPosition", parameters, commandType: CommandType.StoredProcedure);
+            }
         }
     }
 }

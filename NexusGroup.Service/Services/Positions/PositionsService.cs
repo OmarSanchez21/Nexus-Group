@@ -40,9 +40,25 @@ namespace NexusGroup.Service.Services.Positions
             }
             return result;
         }
-        public Task<ServiceResult> Delete(int id)
+        public async Task<ServiceResult> Delete(int id)
         {
-            throw new NotImplementedException();
+            ServiceResult result = new ServiceResult();
+            try
+            {
+                await repositories.Delete(id);
+                result.Message = "The positions is delete successfully";
+            }
+            catch(SqlException ex)
+            {
+                result.Success = false;
+                result.Message = "Sql Error: " + ex.Message;
+            }
+            catch (Exception ex)
+            {
+                result.Success = false;
+                result.Message = "Internal Error: " + ex.Message;
+            }
+            return result;
         }
 
         public Task<ServiceResult> GetValue(int id)
@@ -72,7 +88,33 @@ namespace NexusGroup.Service.Services.Positions
             return result;
         }
 
-        public Task<ServiceResult> Update(UpdatePosition obj)
+        public async Task<ServiceResult> Update(UpdatePosition obj)
+        {
+            ServiceResult result = new ServiceResult();
+            try
+            {
+                var position = new PositionsModels
+                {
+                    positionID = obj.Id,
+                    name = obj.name,
+                    updatedRegistration = obj.updatedRegistration
+                };
+                await this.repositories.Update(position);
+                result.Message = "The position is updated successfully";
+            }
+            catch(SqlException ex)
+            {
+                result.Success = false;
+                result.Message = "SQL Error: " + ex.Message;
+            }
+            catch (Exception ex)
+            {
+                result.Success = false;
+                result.Message = "Interal Error: " + ex.Message; 
+            }
+            return result;
+        }
+        public Task<ServiceResult> Remove(int id)
         {
             throw new NotImplementedException();
         }
