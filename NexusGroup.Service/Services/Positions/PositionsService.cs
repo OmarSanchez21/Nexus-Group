@@ -61,9 +61,35 @@ namespace NexusGroup.Service.Services.Positions
             return result;
         }
 
-        public Task<ServiceResult> GetValue(int id)
+        public async Task<ServiceResult> GetValue(int id)
         {
-            throw new NotImplementedException();
+            ServiceResult result = new ServiceResult();
+            try
+            {
+                var position = await repositories.GetByID(id);
+                if(position == null)
+                {
+                    result.Success = false;
+                    result.Message = "The position is not found";
+                    return result;
+                }
+                else
+                {
+                    result.Data = position;
+                    result.Message = "The position is found";
+                }
+            }
+            catch(SqlException error)
+            {
+                result.Success = false;
+                result.Message = "SQL ERROR: " + error.Message;
+            }
+            catch (Exception ex)
+            {
+                result.Success = false;
+                result.Message = "Internal Error: " + ex.Message;
+            }
+            return result;
         }
 
         public async Task<ServiceResult> Save(AddPosition obj)

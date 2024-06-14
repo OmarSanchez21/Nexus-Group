@@ -10,10 +10,11 @@ namespace NexusGroup.Data.Base
     {
         Task<IEnumerable<T>> GetAll();
         Task<T> GetByID(int id);
-        Task<T> GetByName(string name);
+        Task<IEnumerable<T>> GetAllDeleted();
         Task Add(T entity);
         Task Delete(int id);
-        Task Remove(int id);
+        Task RemovePermantly(int id);
         Task Update(T entity);
+        Task Recover(int id);
     }
 }

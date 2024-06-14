@@ -30,9 +30,18 @@ namespace NexusGroup.Api.Controllers
 
         // GET api/<PositionController>/5
         [HttpGet("{id}")]
-        public string Get(int id)
+        public async Task<IActionResult> Get(int id)
         {
-            return "value";
+            if (id == 0) 
+            {
+                return NotFound("The position not can be 0");
+            }
+            var result = await _positionsService.GetValue(id);
+            if (!result.Success)
+            {
+                return BadRequest(result);
+            }
+            return Ok(result);
         }
 
         // POST api/<PositionController>
