@@ -1,5 +1,7 @@
 ﻿using NexusGroup.Data.Base;
+using NexusGroup.Data.Repositories.AccessLevels;
 using NexusGroup.Data.Repositories.Positions;
+using NexusGroup.Service.Services.AccessLevels;
 using NexusGroup.Service.Services.Positions;
 
 namespace NexusGroup.Api.References
@@ -17,6 +19,11 @@ namespace NexusGroup.Api.References
             {
                 return new DapperDBConnection(configuration);
             });
+        }
+        public static void AddAccessLevelDependency(IServiceCollection services, IConfiguration configuration)
+        {
+            services.AddScoped<IAccessLevelsRepositories, AccessLevelsRepositories>();
+            services.AddScoped<iAccessLevelsService, AccessLevelsService>();
         }
     }
 }

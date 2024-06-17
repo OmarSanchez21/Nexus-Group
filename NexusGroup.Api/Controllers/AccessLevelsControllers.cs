@@ -1,51 +1,53 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using NexusGroup.Service.DTOs.Position;
-using NexusGroup.Service.Services.Positions;
+using NexusGroup.Service.DTOs.AccessLevels;
+using NexusGroup.Service.Services.AccessLevels;
 using Swashbuckle.AspNetCore.Annotations;
+
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace NexusGroup.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class PositionController : ControllerBase
+    public class AccessLevelsControllers : ControllerBase
     {
-        private readonly iPositionsService _positionsService;
-        public PositionController(iPositionsService service)
+        private readonly iAccessLevelsService service;
+        public AccessLevelsControllers(iAccessLevelsService accessLevelsService)
         {
-            this._positionsService = service;
+            this.service = accessLevelsService;
         }
-        // GET: api/<PositionController>
-        [HttpGet]
-        [SwaggerOperation(Summary = "Get All Position", Description = "Adds a new position to the database")]
-        public async Task<IActionResult>Getll()
+        // GET: api/<AccessLevelsControllers>
+        [HttpGet("")]
+        [SwaggerOperation(Summary = "Get All Access Level")]
+        public async Task<IActionResult> Get()
         {
-            var result = await _positionsService.GetAll();
+            var result = await service.GetAll();
             if (!result.Success)
             {
-                return NotFound();
+                return NotFound(result);
             }
             return Ok(result);
         }
+        //GET api/<AccessLevelsControllers>/deleted
         [HttpGet("deleted")]
         public async Task<IActionResult> GetDeleted()
         {
-            var result = await this._positionsService.GetAllDeleted();
+            var result = await this.service.GetAllDeleted();
             if (!result.Success)
             {
                 return BadRequest(result);
             }
             return Ok(result);
         }
-        // GET api/<PositionController>/5
+        // GET api/<AccessLevelsControllers>/value/5
         [HttpGet("value/{id}")]
         public async Task<IActionResult> Get(int id)
         {
-            if (id == 0) 
+            if (id == 0)
             {
-                return NotFound("The position not can be 0");
+                return NotFound("The access level not can be 0");
             }
-            var result = await _positionsService.GetValue(id);
+            var result = await this.service.GetValue(id);
             if (!result.Success)
             {
                 return BadRequest(result);
@@ -53,15 +55,15 @@ namespace NexusGroup.Api.Controllers
             return Ok(result);
         }
 
-        // POST api/<PositionController>
+        // POST api/<AccessLevelsControllers>
         [HttpPost]
-        public async Task<IActionResult> Post([FromBody] AddPosition position)
+        public async Task<IActionResult> Post([FromBody] AddAccessLevels add)
         {
-            if (position == null)
+            if (add.Name == Empty.ToString())
             {
-                return NotFound("Position data is null");
+                return NotFound("The access level data is null");
             }
-            var result = await _positionsService.Save(position);
+            var result = await this.service.SaveAccessLevels(add);
             if (!result.Success)
             {
                 return BadRequest(result);
@@ -69,15 +71,15 @@ namespace NexusGroup.Api.Controllers
             return Ok(result);
         }
 
-        // PUT api/<PositionController>/5
+        // PUT api/<AccessLevelsControllers>/5
         [HttpPut]
-        public async Task<IActionResult> Put([FromBody] UpdatePosition update)
+        public async Task<IActionResult> Put([FromBody] UpdateAccessLevels update)
         {
-            if(update == null)
+            if (update == null)
             {
-                return NotFound("Position data is null");
+                return NotFound("Access Level data is null");
             }
-            var result = await _positionsService.Update(update);
+            var result = await this.service.EditAccessLevels(update);
             if (!result.Success)
             {
                 return BadRequest(result);
@@ -85,21 +87,7 @@ namespace NexusGroup.Api.Controllers
             return Ok(result);
         }
 
-        // DELETE api/<PositionController>/5
-        [HttpPut("delete/{id}")]
-        public async Task<IActionResult> Delete(int id)
-        {
-            if(id == 0)
-            {
-                return NotFound("The Id is not can be zero");
-            }
-            var result = await _positionsService.Delete(id);
-            if (!result.Success)
-            {
-                return BadRequest(result);
-            }
-            return Ok(result);
-        }
+        // DELETE api/<AccessLevelsControllers>/5
         [HttpPut("recover/{id}")]
         public async Task<IActionResult> Recover(int id)
         {
@@ -107,7 +95,21 @@ namespace NexusGroup.Api.Controllers
             {
                 return NotFound("The Id can't be zero");
             }
-            var result = await this._positionsService.Recover(id);
+            var result = await this.service.Recover(id);
+            if (!result.Success)
+            {
+                return BadRequest(result);
+            }
+            return Ok(result);
+        }
+        [HttpPut("delete/{id}")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            if (id == 0)
+            {
+                return NotFound("The Id can't be zero");
+            }
+            var result = await this.service.Delete(id);
             if (!result.Success)
             {
                 return BadRequest(result);
@@ -121,7 +123,7 @@ namespace NexusGroup.Api.Controllers
             {
                 return NotFound("The Id can't be zero");
             }
-            var result = await this._positionsService.Remove(id);
+            var result = await this.service.Remove(id);
             if (!result.Success)
             {
                 return BadRequest(result);
