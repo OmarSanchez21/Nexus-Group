@@ -1,7 +1,9 @@
 ﻿using NexusGroup.Data.Base;
 using NexusGroup.Data.Repositories.AccessLevels;
+using NexusGroup.Data.Repositories.JobOffers;
 using NexusGroup.Data.Repositories.Positions;
 using NexusGroup.Service.Services.AccessLevels;
+using NexusGroup.Service.Services.JobOffers;
 using NexusGroup.Service.Services.Positions;
 
 namespace NexusGroup.Api.References
@@ -24,6 +26,11 @@ namespace NexusGroup.Api.References
         {
             services.AddScoped<IAccessLevelsRepositories, AccessLevelsRepositories>();
             services.AddScoped<iAccessLevelsService, AccessLevelsService>();
+        }
+        public static void AddJobOffersDependency(IServiceCollection services, IConfiguration configuration)
+        {
+            services.AddScoped<IJobOffersRepositories, JobOffersRepositories>();
+            services.AddScoped<iJobOffersService, JobOffersService>();
         }
     }
 }

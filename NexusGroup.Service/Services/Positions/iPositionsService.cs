@@ -9,7 +9,5 @@ namespace NexusGroup.Service.Services.Positions
     {
         Task<ServiceResult> Save(AddPosition obj);
         Task<ServiceResult> Update(UpdatePosition obj);
-        Task<ServiceResult> Delete(int id);
-        Task<ServiceResult> Remove(int id);
     }
 }

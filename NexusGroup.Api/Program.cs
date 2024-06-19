@@ -12,9 +12,16 @@ builder.Services.AddSwaggerGen(c =>
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 
+//Referencias
 Reference.AddPositionDepedency(builder.Services, builder.Configuration);
 Reference.AddAccessLevelDependency(builder.Services, builder.Configuration);
 Reference.AddDBDependency(builder.Services, builder.Configuration);
+Reference.AddJobOffersDependency(builder.Services, builder.Configuration);
+
+
+
+
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

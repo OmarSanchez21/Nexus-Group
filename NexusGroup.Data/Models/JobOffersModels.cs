@@ -14,7 +14,8 @@ namespace NexusGroup.Data.Models
         public int offerID { get; set; }
         public string title { get; set; }
         public string description { get; set; }
-        public DateOnly publicationDate { get; set; }
-        public DateOnly clouserDate { get; set; }
+        public DateTime publicationDate { get; set; }
+        public DateTime clouserDate { get; set; }
+
     }
 }

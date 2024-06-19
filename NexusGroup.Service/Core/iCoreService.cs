@@ -14,5 +14,6 @@ namespace NexusGroup.Service.Core
         Task<ServiceResult> Delete(int id);
         Task<ServiceResult> Remove(int id);
         Task<ServiceResult> Recover(int id);
+
     }
 }
