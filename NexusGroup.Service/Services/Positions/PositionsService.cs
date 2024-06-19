@@ -3,6 +3,7 @@ using NexusGroup.Data.Repositories.Positions;
 using NexusGroup.Service.Core;
 using NexusGroup.Service.DTOs.Position;
 using NexusGroup.Service.Extention;
+using NexusGroup.Service.Validations;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
@@ -21,7 +22,7 @@ namespace NexusGroup.Service.Services.Positions
         }
         public async Task<ServiceResult> GetAll()
         {
-            var result = new ServiceResult();
+            ServiceResult result = new ServiceResult();
             try
             {
                 var positions = await repositories.GetAll();
@@ -102,9 +103,14 @@ namespace NexusGroup.Service.Services.Positions
 
         public async Task<ServiceResult> Save(AddPosition obj)
         {
-            var result = new ServiceResult();
+            ServiceResult result = new ServiceResult();
             try
             {
+                result = PositionsValidations.ValidationsAdd(obj);
+                if (!result.Success)
+                {
+                    return result;
+                }
                 PositionsModels models = obj.GetPositionEntity();
                 await this.repositories.Add(models);
                 result.Message = "Positions saved successfully";
@@ -129,6 +135,11 @@ namespace NexusGroup.Service.Services.Positions
             ServiceResult result = new ServiceResult();
             try
             {
+                result = PositionsValidations.ValidationsUpdate(obj);
+                if (!result.Success)
+                {
+                    return result;
+                }
                 var position = new PositionsModels
                 {
                     positionID = obj.Id,

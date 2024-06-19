@@ -15,14 +15,32 @@ namespace NexusGroup.Service.Services.JobOffers
         {
             this.repositories = repositories;
         }
-        public Task<ServiceResult> Delete(int id)
+        public async Task<ServiceResult> Delete(int id)
         {
-            throw new NotImplementedException();
+            ServiceResult result = new ServiceResult();
+            try
+            {
+                await this.repositories.Delete(id);
+                result.Message = "The job offers is deleted successfully";
+            }
+            catch (SqlException ex)
+            {
+                result.Success = false;
+                result.Message = "Ha ocurrido un error en la base de datos";
+                ExcetionLogs.LogSQLError(ex);
+            }
+            catch (Exception ex)
+            {
+                result.Success = false;
+                result.Message = "Internal Error";
+                ExcetionLogs.LogInternalError(ex);
+            }
+            return result;
         }
 
         public async Task<ServiceResult> GetAll()
         {
-            var result = new ServiceResult();
+            ServiceResult result = new ServiceResult();
             try
             {
                 var joboffers = await repositories.GetAll();
@@ -157,7 +175,7 @@ namespace NexusGroup.Service.Services.JobOffers
 
         public async Task<ServiceResult> Save(AddJobOffers obj)
         {
-            var result = new ServiceResult();
+            ServiceResult result = new ServiceResult();
             try
             {
                 result = JobOfferesValidation.ValidationsAdd(obj);

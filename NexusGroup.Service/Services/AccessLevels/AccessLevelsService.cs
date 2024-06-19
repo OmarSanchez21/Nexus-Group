@@ -3,6 +3,7 @@ using NexusGroup.Data.Repositories.AccessLevels;
 using NexusGroup.Service.Core;
 using NexusGroup.Service.DTOs.AccessLevels;
 using NexusGroup.Service.Extention;
+using NexusGroup.Service.Validations;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
@@ -105,6 +106,11 @@ namespace NexusGroup.Service.Services.AccessLevels
             ServiceResult result = new ServiceResult();
             try
             {
+                result = AccessLevelsValidations.ValidationsAdd(accessLevels);
+                if (!result.Success)
+                {
+                    return result;
+                }
                 AccessLevelsModels models = accessLevels.GetAccessLevelsEntity();
                 await this.repositories.Add(models);
                 result.Message = "Access Level saved successfully";
@@ -129,6 +135,11 @@ namespace NexusGroup.Service.Services.AccessLevels
             ServiceResult result = new ServiceResult();
             try
             {
+                result = AccessLevelsValidations.ValidationsUpdate(accessLevels);
+                if (!result.Success)
+                {
+                    return result;
+                }
                 var access = new AccessLevelsModels()
                 {
                     accessLevelsID = accessLevels.Id,
