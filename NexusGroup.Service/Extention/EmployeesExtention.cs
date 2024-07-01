@@ -18,13 +18,34 @@ namespace NexusGroup.Service.Extention
                 lastName = models.lastName,
                 photo = models.photo,
                 email = models.email,
-                passwordHash = models.passwordHash,
+                passwordHash = PasswordHashed(models.passwordHash),
                 joinDate = models.joinDate.ToDateTime(TimeOnly.MinValue),
                 positionID = models.positionID,
                 accessLevelID = models.accessLevelID,
             };
             return emp;
 
+        }
+        public static EmployeesModels GetUpdatedEmployee(this UpdateEmployees models)
+        {
+            EmployeesModels emp = new EmployeesModels()
+            {
+                name = models.name,
+                lastName = models.lastName,
+                photo = models.photo,
+                email = models.email,
+                passwordHash = PasswordHashed(models.passwordHash),
+                joinDate = models.joinDate.ToDateTime(TimeOnly.MinValue),
+                positionID = models.positionID,
+                accessLevelID = models.accessLevelID,
+            };
+            return emp;
+
+        }
+        private static string PasswordHashed(string password)
+        {
+            string hash = BCrypt.Net.BCrypt.HashPassword(password);
+            return hash;
         }
     }
 }

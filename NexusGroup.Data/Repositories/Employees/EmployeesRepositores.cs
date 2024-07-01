@@ -78,7 +78,7 @@ namespace NexusGroup.Data.Repositories.Employees
             using (IDbConnection db = _dbConnection.CreateConnection())
             {
                 var parameters = new { Id = id };
-                await db.ExecuteAsync("RecoverEmployees", parameters, commandType: CommandType.StoredProcedure);
+                await db.ExecuteAsync("recoverEmployees", parameters, commandType: CommandType.StoredProcedure);
             }
         }
 

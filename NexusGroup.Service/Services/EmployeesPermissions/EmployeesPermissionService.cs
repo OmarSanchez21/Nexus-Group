@@ -1,10 +1,8 @@
 ﻿using NexusGroup.Data.Models;
-using NexusGroup.Data.Repositories.Employees;
+using NexusGroup.Data.Repositories.EmployeesPermission;
 using NexusGroup.Service.Core;
-using NexusGroup.Service.DTOs.Employees;
-using NexusGroup.Service.DTOs.JobOffers;
+using NexusGroup.Service.DTOs.EmployeesPermission;
 using NexusGroup.Service.Extention;
-using NexusGroup.Service.Validations;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
@@ -12,23 +10,22 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace NexusGroup.Service.Services.Employees
+namespace NexusGroup.Service.Services.EmployeesPermissions
 {
-    public class EmployeesService : iEmployeesService
+    public class EmployeesPermissionService : iEmployeesPermissionsService
     {
-        private readonly IEmployeesRepositories repositories;
-        public EmployeesService(IEmployeesRepositories employeesService)
+        private readonly iEmployeesPermissionRepositories repositories;
+        public EmployeesPermissionService(iEmployeesPermissionRepositories repositories)
         {
-            repositories = employeesService;
+            this.repositories = repositories;
         }
-
         public async Task<ServiceResult> Delete(int id)
         {
             ServiceResult result = new ServiceResult();
             try
             {
                 await this.repositories.Delete(id);
-                result.Message = "The employees is deleted successfully";
+                result.Message = "The Employee Permission is deleted succesfully";
             }
             catch (SqlException ex)
             {
@@ -50,20 +47,20 @@ namespace NexusGroup.Service.Services.Employees
             ServiceResult result = new ServiceResult();
             try
             {
-                var employees = await repositories.GetAll();
-                var employeesDTO = employees.Select(emp => new AllEmployees()
+                var permission = await repositories.GetAll();
+                var permissionDTO = permission.Select(perm => new EmployeesPermissionDTO()
                 {
-                    employeeID = emp.employeeID,
-                    name = emp.name,
-                    lastName = emp.lastName,
-                    photo = emp.photo,
-                    email = emp.email,
-                    joinDate = DateOnly.FromDateTime(emp.joinDate),
-                    accessLevelID = emp.accessLevelID,
-                    positionID = emp.positionID,
+                    permissionID = perm.permissionID,
+                    employeeID = perm.employeeID,
+                    permissionType = perm.permissionType,
+                    startDate = DateOnly.FromDateTime(perm.startDate),
+                    endDate = DateOnly.FromDateTime(perm.endDate),
+                    requestDate = DateOnly.FromDateTime(perm.requestDate),
+                    isAproved = perm.isAproved
                 }).ToList();
-                result.Success = true;
-                result.Data = employeesDTO;
+
+                result.Data = permissionDTO;
+                result.Message = "All Permission is here";
             }
             catch (SqlException ex)
             {
@@ -85,20 +82,20 @@ namespace NexusGroup.Service.Services.Employees
             ServiceResult result = new ServiceResult();
             try
             {
-                var employees = await repositories.GetAllDeleted();
-                var employeesDTO = employees.Select(emp => new AllEmployees()
+                var permission = await repositories.GetAllDeleted();
+                var permissionDTO = permission.Select(perm => new EmployeesPermissionDTO()
                 {
-                    employeeID = emp.employeeID,
-                    name = emp.name,
-                    lastName = emp.lastName,
-                    photo = emp.photo,
-                    email = emp.email,
-                    joinDate = DateOnly.FromDateTime(emp.joinDate),
-                    accessLevelID = emp.accessLevelID,
-                    positionID = emp.positionID,
-                });
-                result.Success = true;
-                result.Data = employeesDTO;
+                    permissionID = perm.permissionID,
+                    employeeID = perm.employeeID,
+                    permissionType = perm.permissionType,
+                    startDate = DateOnly.FromDateTime(perm.startDate),
+                    endDate = DateOnly.FromDateTime(perm.endDate),
+                    requestDate = DateOnly.FromDateTime(perm.requestDate),
+                    isAproved = perm.isAproved
+                }).ToList();
+
+                result.Data = permissionDTO;
+                result.Message = "All Permission Deleted is here";
             }
             catch (SqlException ex)
             {
@@ -120,17 +117,27 @@ namespace NexusGroup.Service.Services.Employees
             ServiceResult result = new ServiceResult();
             try
             {
-                var employee = await this.repositories.GetByID(id);
-                if (employee == null) 
+                var permision = await this.repositories.GetByID(id);
+                if (permision == null)
                 {
                     result.Success = false;
-                    result.Message = "The employee doesnt exists";
+                    result.Message = "The permission doesnt exits";
                     return result;
                 }
                 else
                 {
-                    result.Data = employee;
-                    result.Message = "The employee is founded.";
+                    EmployeesPermissionDTO perm = new EmployeesPermissionDTO()
+                    {
+                        permissionID = permision.permissionID,
+                        employeeID = permision.employeeID,
+                        permissionType = permision.permissionType,
+                        startDate = DateOnly.FromDateTime(permision.startDate),
+                        endDate = DateOnly.FromDateTime(permision.endDate),
+                        requestDate = DateOnly.FromDateTime(permision.requestDate),
+                        isAproved = permision.isAproved
+                    };
+                    result.Data = perm;
+                    result.Message = "The Permission is here";
                 }
             }
             catch (SqlException ex)
@@ -154,7 +161,7 @@ namespace NexusGroup.Service.Services.Employees
             try
             {
                 await this.repositories.Recover(id);
-                result.Message = "The Job Offers is recovered succesfully";
+                result.Message = "The Employee Permission is recovered successfully";
             }
             catch (SqlException ex)
             {
@@ -177,7 +184,7 @@ namespace NexusGroup.Service.Services.Employees
             try
             {
                 await this.repositories.RemovePermantly(id);
-                result.Message = "The Job Offers is removed permantly";
+                result.Message = "The Employee Permission is removed permantly";
             }
             catch (SqlException ex)
             {
@@ -194,14 +201,14 @@ namespace NexusGroup.Service.Services.Employees
             return result;
         }
 
-        public async Task<ServiceResult> Save(AddEmployees obj)
+        public async Task<ServiceResult> Save(AddEmployeesPermissionDTO dto)
         {
             ServiceResult result = new ServiceResult();
             try
             {
-                EmployeesModels models = obj.GetEmployeesEntity();
+                EmployeesPermissionModels models = dto.GetPermissionEntity();
                 await this.repositories.Add(models);
-                result.Message = "Employees saved successfully";
+                result.Message = "The Permission saved Successfully";
             }
             catch (SqlException ex)
             {
@@ -218,14 +225,17 @@ namespace NexusGroup.Service.Services.Employees
             return result;
         }
 
-        public async Task<ServiceResult> Update(UpdateEmployees obj)
+        public async Task<ServiceResult> Update(EditEmployeesPermissionDTO dto)
         {
             ServiceResult result = new ServiceResult();
             try
             {
-                EmployeesModels employees = obj.GetUpdatedEmployee();
-                await this.repositories.Update(employees);
-                result.Message = "The Employee is updated successfully";
+                EmployeesPermissionModels models = await this.repositories.GetByID(dto.permissionID);
+
+                models = dto.GetUpdatedPermissionEntity();
+
+                await this.repositories.Update(models);
+                result.Message = "The Permission was updated Successfully";
             }
             catch (SqlException ex)
             {
