@@ -8,6 +8,7 @@ using System.Data.Common;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Threading.Tasks.Dataflow;
 using static Dapper.SqlMapper;
 
 namespace NexusGroup.Data.Repositories.Employees
@@ -40,7 +41,7 @@ namespace NexusGroup.Data.Repositories.Employees
             using (IDbConnection db = _dbConnection.CreateConnection())
             {
                 var parameters = new { Id = id };
-                return await db.QueryFirstOrDefaultAsync<EmployeesModels>("getAllEmployees", parameters ,commandType: CommandType.StoredProcedure);
+                return await db.QueryFirstOrDefaultAsync<EmployeesModels>("getIdEmployees", parameters ,commandType: CommandType.StoredProcedure);
             }
         }
         public async Task Add(EmployeesModels entity)
@@ -52,12 +53,13 @@ namespace NexusGroup.Data.Repositories.Employees
                     LastName = entity.lastName,
                     Photo = entity.photo,
                     Email = entity.email,
+                    Username = entity.username,
                     PasswordHash = entity.passwordHash,
                     JoinDate = entity.joinDate,
                     PositionID = entity.positionID,
                     AccessLevelID = entity.accessLevelID
                 };
-               await db.QueryAsync<EmployeesModels>("addEmployees", parameters ,commandType: CommandType.StoredProcedure);
+               await db.ExecuteAsync("addEmployees", parameters ,commandType: CommandType.StoredProcedure);
             }
         }
 
@@ -69,7 +71,7 @@ namespace NexusGroup.Data.Repositories.Employees
                 {
                    Id = id
                 };
-                await db.QueryAsync<EmployeesModels>("editEmployees", parameters, commandType: CommandType.StoredProcedure);
+                await db.ExecuteAsync("editEmployees", parameters, commandType: CommandType.StoredProcedure);
             }
         }
 
@@ -93,22 +95,34 @@ namespace NexusGroup.Data.Repositories.Employees
 
         public async Task Update(EmployeesModels entity)
         {
-            using(IDbConnection db = _dbConnection.CreateConnection())
-            { 
-            var parameters = new
+            using (IDbConnection db = _dbConnection.CreateConnection())
             {
-                Name = entity.name,
-                LastName = entity.lastName,
-                Photo = entity.photo,
-                Email = entity.email,
-                PasswordHash = entity.passwordHash,
-                JoinDate = entity.joinDate,
-                PositionID = entity.positionID,
-                AccessLevelID = entity.accessLevelID,
-                UpdatedRegistration = entity.updatedRegistration
-            };
-            await db.QueryAsync<EmployeesModels>("editEmployees", parameters, commandType: CommandType.StoredProcedure);
+                var parameters = new
+                {
+                    Name = entity.name,
+                    LastName = entity.lastName,
+                    Photo = entity.photo,
+                    Email = entity.email,
+                    Username = entity.username,
+                    JoinDate = entity.joinDate,
+                    PositionID = entity.positionID,
+                    AccessLevelID = entity.accessLevelID,
+                    UpdatedRegistration = entity.updatedRegistration
+                };
+                await db.ExecuteAsync("editEmployees", parameters, commandType: CommandType.StoredProcedure);
+            }
         }
-    }
+        public async Task ChangePassword(int id, string password)
+        {
+            using(IDbConnection db = _dbConnection.CreateConnection())
+            {
+                var parameters = new
+                {
+                    Id = id,
+                    Password = password
+                };
+                await db.ExecuteAsync("ChangePassword", parameters, commandType: CommandType.StoredProcedure);
+            }
+        }
     }
 }

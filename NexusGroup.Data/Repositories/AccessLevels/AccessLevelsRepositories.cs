@@ -60,7 +60,12 @@ namespace NexusGroup.Data.Repositories.AccessLevels
         {
             using (IDbConnection db = _dBConnection.CreateConnection())
             {
-                var parameters = new { Id = entity.accessLevelsID, Name = entity.name, updateDate = entity.updatedRegistration };
+                var parameters = new 
+                { 
+                    Id = entity.accessLevelsID, 
+                    Name = entity.name, 
+                    updateDate = entity.updatedRegistration
+                };
                 await db.ExecuteAsync("editAccessLevels", parameters, commandType: CommandType.StoredProcedure);
             }
         }

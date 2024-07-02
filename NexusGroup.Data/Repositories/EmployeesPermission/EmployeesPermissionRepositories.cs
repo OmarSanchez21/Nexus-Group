@@ -30,7 +30,7 @@ namespace NexusGroup.Data.Repositories.EmployeesPermission
                     RequestDate = entity.requestDate,
                     isAproved = entity.isAproved,
                 };
-                await db.QueryAsync<EmployeesPermissionModels>("addEmployeesPermissions", parameters, commandType: CommandType.StoredProcedure);
+                await db.ExecuteAsync("addEmployeesPermissions", parameters, commandType: CommandType.StoredProcedure);
             }
         }
 
@@ -100,7 +100,7 @@ namespace NexusGroup.Data.Repositories.EmployeesPermission
                     isAproved = entity.isAproved,
                     UpdateRegistration = entity.updatedRegistration
                 };
-                await db.QueryAsync<EmployeesPermissionModels>("editEmployeesPermissions", parameters, commandType: CommandType.StoredProcedure);
+                await db.ExecuteAsync("editEmployeesPermissions", parameters, commandType: CommandType.StoredProcedure);
             }
         }
     }

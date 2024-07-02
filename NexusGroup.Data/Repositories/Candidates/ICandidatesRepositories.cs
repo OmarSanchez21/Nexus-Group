@@ -6,10 +6,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace NexusGroup.Data.Repositories.Employees
+namespace NexusGroup.Data.Repositories.Candidates
 {
-    public interface IEmployeesRepositories: IService<EmployeesModels>
+    public interface ICandidatesRepositories: IService<CandidatesModels>
     {
-        Task ChangePassword(int id, string password);
     }
 }

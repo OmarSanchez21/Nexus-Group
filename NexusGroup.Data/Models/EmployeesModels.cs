@@ -16,6 +16,7 @@ namespace NexusGroup.Data.Models
         public string lastName { get; set; }
         public string photo { get; set; }
         public string email { get; set; }
+        public string username { get; set; }
         public string passwordHash { get; set; }
         public DateTime joinDate { get; set; }
         public int positionID { get; set; }
