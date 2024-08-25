@@ -15,8 +15,6 @@
     <Folder Include="Repositories\Training\" />
     <Folder Include="Repositories\Position\" />
     <Folder Include="Repositories\PerformanceReview\" />
-    <Folder Include="Repositories\PayRoll\" />
-    <Folder Include="Repositories\OverTime\" />
   </ItemGroup>
 
 </Project>
