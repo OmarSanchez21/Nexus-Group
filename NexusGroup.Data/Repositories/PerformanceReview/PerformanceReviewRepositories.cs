@@ -8,26 +8,28 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace NexusGroup.Data.Repositories.OverTime
+namespace NexusGroup.Data.Repositories.PerformanceReview
 {
-    public class OverTimeRepositories : IOverTimeRepositories
+    public class PerformanceReviewRepositories : IPerformanceReviewRepositories
     {
         private readonly IDapperContext _dapperContext;
-        public OverTimeRepositories(IDapperContext dapperContext)
+        public PerformanceReviewRepositories(IDapperContext dapperContext)
         {
             _dapperContext = dapperContext;
         }
-        public async Task<int> Add(M_Overtime entity)
+        public async Task<int> Add(M_PerformanceReview entity)
         {
-            using(var connection = _dapperContext.CreateConnection())
+            using (var connection = _dapperContext.CreateConnection()) 
             {
                 var parameters = new DynamicParameters();
                 parameters.Add("@EmployeeID", entity.EmployeeID);
-                parameters.Add("@WorkDate", entity.WorkDate);
-                parameters.Add("@ExtrasHours", entity.ExtraHours);
-                parameters.Add("@HourlyRate", entity.HourlyRate);
+                parameters.Add("@ReviewDate", entity.ReviewDate);
+                parameters.Add("@Reviewer", entity.Reviewer);
+                parameters.Add("@ReviewDescription", entity.ReviewDescription);
+                parameters.Add("@Observation", entity.Observation);
+                parameters.Add("@Score", entity.Score);
                 parameters.Add("@RowsAffected", dbType: DbType.Int32, direction: ParameterDirection.Output);
-                await connection.ExecuteAsync("spAddOverTime", parameters, commandType: CommandType.StoredProcedure);
+                await connection.ExecuteAsync("spAddPerformanceReview", parameters, commandType: CommandType.StoredProcedure);
                 int rowsAffected = parameters.Get<int>("@RowsAffected");
                 return rowsAffected;
             }
@@ -35,12 +37,12 @@ namespace NexusGroup.Data.Repositories.OverTime
 
         public async Task<int> Delete(int id)
         {
-            using(var connection = _dapperContext.CreateConnection())
+            using (var connection = _dapperContext.CreateConnection()) 
             {
                 var parameters = new DynamicParameters();
                 parameters.Add("@Id", id);
                 parameters.Add("@RowsAffected", dbType: DbType.Int32, direction: ParameterDirection.Output);
-                await connection.ExecuteAsync("spDeleteOverTime", parameters, commandType: CommandType.StoredProcedure);
+                await connection.ExecuteAsync("spDeletePerformanceReview", parameters, commandType: CommandType.StoredProcedure);
                 int rowsAffected = parameters.Get<int>("@RowsAffected");
                 return rowsAffected;
             }
@@ -48,59 +50,61 @@ namespace NexusGroup.Data.Repositories.OverTime
 
         public async Task<int> DeletePermantly(int id)
         {
-            using(var connection = _dapperContext.CreateConnection())
+            using (var connection = _dapperContext.CreateConnection())
             {
                 var parameters = new DynamicParameters();
                 parameters.Add("@Id", id);
                 parameters.Add("@RowsAffected", dbType: DbType.Int32, direction: ParameterDirection.Output);
-                await connection.ExecuteAsync("spDeletePermantlyOverTime", parameters, commandType: CommandType.StoredProcedure);
+                await connection.ExecuteAsync("spDeletePermantlyPerformanceReview", parameters, commandType: CommandType.StoredProcedure);
                 int rowsAffected = parameters.Get<int>("@RowsAffected");
                 return rowsAffected;
             }
         }
 
-        public async Task<int> Edit(M_Overtime entity)
+        public async Task<int> Edit(M_PerformanceReview entity)
         {
             using (var connection = _dapperContext.CreateConnection())
             {
                 var parameters = new DynamicParameters();
-                parameters.Add("@Id", entity.OverTimeID);
+                parameters.Add("@Id", entity.ReviewID);
                 parameters.Add("@EmployeeID", entity.EmployeeID);
-                parameters.Add("@WorkDate", entity.WorkDate);
-                parameters.Add("@ExtrasHours", entity.ExtraHours);
-                parameters.Add("@HourlyRate", entity.HourlyRate);
+                parameters.Add("@ReviewDate", entity.ReviewDate);
+                parameters.Add("@Reviewer", entity.Reviewer);
+                parameters.Add("@ReviewDescription", entity.ReviewDescription);
+                parameters.Add("@Observation", entity.Observation);
+                parameters.Add("@Score", entity.Score);
                 parameters.Add("@RowsAffected", dbType: DbType.Int32, direction: ParameterDirection.Output);
-                await connection.ExecuteAsync("spEditOverTime", parameters, commandType: CommandType.StoredProcedure);
+                await connection.ExecuteAsync("spEditPerformanceReview", parameters, commandType: CommandType.StoredProcedure);
                 int rowsAffected = parameters.Get<int>("@RowsAffected");
                 return rowsAffected;
             }
         }
 
-        public async Task<IEnumerable<M_Overtime>> GetAll()
+        public async Task<IEnumerable<M_PerformanceReview>> GetAll()
         {
             using(var connection = _dapperContext.CreateConnection())
             {
-                return await connection.QueryAsync<M_Overtime>("spGetAllOverTime", commandType: CommandType.StoredProcedure);
+                return await connection.QueryAsync<M_PerformanceReview>("spGetAllPerformanceReview", commandType: CommandType.StoredProcedure);
             }
         }
 
-        public async Task<IEnumerable<M_Overtime>> GetAllDeleted()
+        public async Task<IEnumerable<M_PerformanceReview>> GetAllDeleted()
         {
-            using(var connection = _dapperContext.CreateConnection())
+            using (var connection = _dapperContext.CreateConnection())
             {
-                return await connection.QueryAsync<M_Overtime>("spGetAllOverTimeDeleted", commandType: CommandType.StoredProcedure);
+                return await connection.QueryAsync<M_PerformanceReview>("spGetAllPerformanceReviewDeleted", commandType: CommandType.StoredProcedure);
             }
         }
 
-        public async Task<M_Overtime> GetValue(int id)
+        public async Task<M_PerformanceReview> GetValue(int id)
         {
             using (var connection = _dapperContext.CreateConnection())
             {
                 var parameters = new DynamicParameters();
                 parameters.Add("@Id", id);
-                return await connection.QueryFirstOrDefaultAsync<M_Overtime>("spGetOverTime", parameters, commandType: CommandType.StoredProcedure);
+                return await connection.QueryFirstOrDefaultAsync<M_PerformanceReview>("spGetPerformanceReview", parameters, commandType: CommandType.StoredProcedure);
             }
-        } 
+        }
         public async Task<int> Recover(int id)
         {
             using (var connection = _dapperContext.CreateConnection())
@@ -108,7 +112,7 @@ namespace NexusGroup.Data.Repositories.OverTime
                 var parameters = new DynamicParameters();
                 parameters.Add("@Id", id);
                 parameters.Add("@RowsAffected", dbType: DbType.Int32, direction: ParameterDirection.Output);
-                await connection.ExecuteAsync("spRecoverOverTime", parameters, commandType: CommandType.StoredProcedure);
+                await connection.ExecuteAsync("spRecoverPermantlyPerformanceReview", parameters, commandType: CommandType.StoredProcedure);
                 int rowsAffected = parameters.Get<int>("@RowsAffected");
                 return rowsAffected;
             }

@@ -27,7 +27,10 @@ namespace NexusGroup.Data.Repositories.EmployeesPermission
                 paramaters.Add("@EndDate", entity.EndDate);
                 paramaters.Add("IsRequest", entity.IsRequest);
                 paramaters.Add("ApprovedDate", entity.ApprovedDate);
-                return await connection.ExecuteAsync("spAddEmployeesPermission", paramaters, commandType: CommandType.StoredProcedure);
+                paramaters.Add("@RowsAffected", dbType: DbType.Int32, direction: ParameterDirection.Output);
+                await connection.ExecuteAsync("spAddEmployeesPermission", paramaters, commandType: CommandType.StoredProcedure);
+                int rowsAffected = paramaters.Get<int>("@RowsAffected");
+                return rowsAffected;
             }
         }
 
@@ -37,7 +40,10 @@ namespace NexusGroup.Data.Repositories.EmployeesPermission
             {
                 var paramaters = new DynamicParameters();
                 paramaters.Add("@Id", id);
-                return await connection.ExecuteAsync("spDeleteEmployeesPermission", paramaters, commandType: CommandType.StoredProcedure);
+                paramaters.Add("@RowsAffected", dbType: DbType.Int32, direction: ParameterDirection.Output);
+                await connection.ExecuteAsync("spDeleteEmployeesPermission", paramaters, commandType: CommandType.StoredProcedure);
+                int rowsAffected = paramaters.Get<int>("@RowsAffected");
+                return rowsAffected;
             }
         }
 
@@ -47,7 +53,10 @@ namespace NexusGroup.Data.Repositories.EmployeesPermission
             {
                 var paramaters = new DynamicParameters();
                 paramaters.Add("@Id", id);
-                return await connection.ExecuteAsync("spDeletePermantlyzEmployeesPermission", paramaters, commandType: CommandType.StoredProcedure);
+                paramaters.Add("@RowsAffected", dbType: DbType.Int32, direction: ParameterDirection.Output);
+                await connection.ExecuteAsync("spDeletePermantlyzEmployeesPermission", paramaters, commandType: CommandType.StoredProcedure);
+                int rowsAffected = paramaters.Get<int>("@RowsAffected");
+                return rowsAffected;
             }
         }
 
@@ -63,7 +72,10 @@ namespace NexusGroup.Data.Repositories.EmployeesPermission
                 paramaters.Add("@EndDate", entity.EndDate);
                 paramaters.Add("IsRequest", entity.IsRequest);
                 paramaters.Add("ApprovedDate", entity.ApprovedDate);
-                return await connection.ExecuteAsync("spEditEmployeesPermission", paramaters, commandType: CommandType.StoredProcedure);
+                paramaters.Add("@RowsAffected", dbType: DbType.Int32, direction: ParameterDirection.Output);
+                await connection.ExecuteAsync("spEditEmployeesPermission", paramaters, commandType: CommandType.StoredProcedure);
+                int rowsAffected = paramaters.Get<int>("@RowsAffected");
+                return rowsAffected;
             }
         }
 
@@ -99,7 +111,10 @@ namespace NexusGroup.Data.Repositories.EmployeesPermission
             {
                 var parameters = new DynamicParameters();
                 parameters.Add("@Id", id);
-                return await connection.ExecuteAsync("spRecoverEmployeesPermission", commandType: CommandType.StoredProcedure);
+                parameters.Add("@RowsAffected", dbType: DbType.Int32, direction: ParameterDirection.Output);
+                await connection.ExecuteAsync("spRecoverEmployeesPermission", commandType: CommandType.StoredProcedure);
+                int rowsAffected = parameters.Get<int>("@RowsAffected");
+                return rowsAffected;
             }
         }
     }

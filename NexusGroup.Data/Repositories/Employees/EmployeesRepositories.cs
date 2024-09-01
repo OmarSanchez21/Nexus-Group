@@ -32,7 +32,10 @@ namespace NexusGroup.Data.Repositories.Employees
                 parameters.Add("@Salary", entity.Salary);
                 parameters.Add("@PositionID", entity.PositionID);
                 parameters.Add("@AccessLevelsID", entity.AccessLevelsID);
-                return await connection.ExecuteAsync("spAddEmployees", parameters, commandType: CommandType.StoredProcedure);
+                parameters.Add("@RowsAffected", dbType: DbType.Int32, direction: ParameterDirection.Output);
+                await connection.ExecuteAsync("spAddEmployees", parameters, commandType: CommandType.StoredProcedure);
+                int rowsAffected = parameters.Get<int>("@RowsAffected");
+                return rowsAffected;
             }
         }
 
@@ -42,7 +45,10 @@ namespace NexusGroup.Data.Repositories.Employees
             {
                 var parameters = new DynamicParameters();
                 parameters.Add("@Id", id);
-                return await connection.ExecuteAsync("spDeleteEmployees", parameters, commandType: CommandType.StoredProcedure);
+                parameters.Add("@RowsAffected", dbType: DbType.Int32, direction: ParameterDirection.Output);
+                await connection.ExecuteAsync("spDeleteEmployees", parameters, commandType: CommandType.StoredProcedure);
+                int rowsAffected = parameters.Get<int>("@RowsAffected");
+                return rowsAffected;
             }
         }
 
@@ -52,7 +58,10 @@ namespace NexusGroup.Data.Repositories.Employees
             {
                 var parameters = new DynamicParameters();
                 parameters.Add("@Id", id);
-                return await connection.ExecuteAsync("spDeletePermantlyEmployees", parameters, commandType: CommandType.StoredProcedure);
+                parameters.Add("@RowsAffected", dbType: DbType.Int32, direction: ParameterDirection.Output);
+                await connection.ExecuteAsync("spDeletePermantlyEmployees", parameters, commandType: CommandType.StoredProcedure);
+                int rowsAffected = parameters.Get<int>("@RowsAffected");
+                return rowsAffected;
             }
         }
 
@@ -72,7 +81,10 @@ namespace NexusGroup.Data.Repositories.Employees
                 parameters.Add("@Salary", entity.Salary);
                 parameters.Add("@PositionID", entity.PositionID);
                 parameters.Add("@AccessLevelsID", entity.AccessLevelsID);
-                return await connection.ExecuteAsync("spEditEmployees", parameters, commandType: CommandType.StoredProcedure);
+                parameters.Add("@RowsAffected", dbType: DbType.Int32, direction: ParameterDirection.Output);
+                await connection.ExecuteAsync("spEditEmployees", parameters, commandType: CommandType.StoredProcedure);
+                int rowsAffected = parameters.Get<int>("@RowsAffected");
+                return rowsAffected;
             }
         }
 
@@ -107,7 +119,10 @@ namespace NexusGroup.Data.Repositories.Employees
             {
                 var parameters = new DynamicParameters();
                 parameters.Add("@Id", id);
-                return await connection.ExecuteAsync("spRecoverEmployees", parameters, commandType: CommandType.StoredProcedure);
+                parameters.Add("@RowsAffected", dbType: DbType.Int32, direction: ParameterDirection.Output);
+                await connection.ExecuteAsync("spRecoverEmployees", parameters, commandType: CommandType.StoredProcedure);
+                int rowsAffected = parameters.Get<int>("@RowsAffected");
+                return rowsAffected;
             }
         }
     }

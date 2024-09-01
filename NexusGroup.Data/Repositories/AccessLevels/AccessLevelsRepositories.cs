@@ -22,11 +22,11 @@ namespace NexusGroup.Data.Repositories.AccessLevels
         {
             using(var connection = _dapperContext.CreateConnection())
             {
-                return await connection.QueryAsync<M_AccessLevels>("spGetAcessLevels", commandType: CommandType.StoredProcedure);
+                return await connection.QueryAsync<M_AccessLevels>("spGetAllAcessLevels", commandType: CommandType.StoredProcedure);
             }
         }
 
-        public async Task<M_AccessLevels> GetValue(int id)
+        public async Task<M_AccessLevels> GetValue(string id)
         {
             using(var connection = _dapperContext.CreateConnection())
             {

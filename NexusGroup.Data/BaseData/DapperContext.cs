@@ -9,7 +9,7 @@ namespace NexusGroup.Data.BaseData
     {
         IDbConnection CreateConnection();
     }
-    internal class DapperContext : IDapperContext
+    public class DapperContext : IDapperContext
     {
         private readonly string _connectionString;
         public DapperContext(string connection)

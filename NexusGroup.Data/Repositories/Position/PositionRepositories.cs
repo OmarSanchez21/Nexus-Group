@@ -8,26 +8,23 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace NexusGroup.Data.Repositories.JobOffers
+namespace NexusGroup.Data.Repositories.Position
 {
-    public class JobOffersRepositories : IJobOffersRepositories
+    public class PositionRepositories : IPositionRepositories
     {
         private readonly IDapperContext _dapperContext;
-        public JobOffersRepositories(IDapperContext dapperContext)
+        public PositionRepositories(IDapperContext dapperContext)
         {
-            _dapperContext = dapperContext;
+            this._dapperContext = dapperContext;
         }
-        public async Task<int> Add(M_JobOffers entity)
+        public async Task<int> Add(M_Position entity)
         {
-            using(var connection = _dapperContext.CreateConnection())
+            using (var connection = _dapperContext.CreateConnection())
             {
                 var parameters = new DynamicParameters();
                 parameters.Add("@Title", entity.Title);
-                parameters.Add("@Description", entity.Description);
-                parameters.Add("@StartPublication", entity.StartPublication);
-                parameters.Add("@EndPublication", entity.EndPublication);
                 parameters.Add("@RowsAffected", dbType: DbType.Int32, direction: ParameterDirection.Output);
-                await connection.ExecuteAsync("spAddJobOffer", parameters, commandType: CommandType.StoredProcedure);
+                await connection.ExecuteAsync("spAddPosition", parameters, commandType: CommandType.StoredProcedure);
                 int rowsAffected = parameters.Get<int>("@RowsAffected");
                 return rowsAffected;
             }
@@ -40,7 +37,7 @@ namespace NexusGroup.Data.Repositories.JobOffers
                 var parameters = new DynamicParameters();
                 parameters.Add("@Id", id);
                 parameters.Add("@RowsAffected", dbType: DbType.Int32, direction: ParameterDirection.Output);
-                await connection.ExecuteAsync("spDeleteJobOffer", parameters, commandType: CommandType.StoredProcedure);
+                await connection.ExecuteAsync("spDeletePosition", parameters, commandType: CommandType.StoredProcedure);
                 int rowsAffected = parameters.Get<int>("@RowsAffected");
                 return rowsAffected;
             }
@@ -48,60 +45,56 @@ namespace NexusGroup.Data.Repositories.JobOffers
 
         public async Task<int> DeletePermantly(int id)
         {
-            using(var connection = _dapperContext.CreateConnection())
+            using (var connection = _dapperContext.CreateConnection())
             {
                 var parameters = new DynamicParameters();
                 parameters.Add("@Id", id);
                 parameters.Add("@RowsAffected", dbType: DbType.Int32, direction: ParameterDirection.Output);
-                await connection.ExecuteAsync("spDeletePermantlyJobOffer", parameters, commandType: CommandType.StoredProcedure);
+                await connection.ExecuteAsync("spDeletePermantlyPosition", parameters, commandType: CommandType.StoredProcedure);
                 int rowsAffected = parameters.Get<int>("@RowsAffected");
                 return rowsAffected;
             }
         }
 
-        public async Task<int> Edit(M_JobOffers entity)
+        public async Task<int> Edit(M_Position entity)
         {
             using (var connection = _dapperContext.CreateConnection())
             {
                 var parameters = new DynamicParameters();
-                parameters.Add("@Id", entity.JobOfferID);
+                parameters.Add("@Id", entity.PositionID);
                 parameters.Add("@Title", entity.Title);
-                parameters.Add("@Description", entity.Description);
-                parameters.Add("@StartPublication", entity.StartPublication);
-                parameters.Add("@EndPublication", entity.EndPublication);
                 parameters.Add("@RowsAffected", dbType: DbType.Int32, direction: ParameterDirection.Output);
-                await connection.ExecuteAsync("spEditJobOffer", parameters, commandType: CommandType.StoredProcedure);
+                await connection.ExecuteAsync("spEditPosition", parameters, commandType: CommandType.StoredProcedure);
                 int rowsAffected = parameters.Get<int>("@RowsAffected");
                 return rowsAffected;
             }
         }
 
-        public async Task<IEnumerable<M_JobOffers>> GetAll()
+        public async Task<IEnumerable<M_Position>> GetAll()
         {
             using(var connection = _dapperContext.CreateConnection())
             {
-                return await connection.QueryAsync<M_JobOffers>("spGetAllJobOffers", commandType: CommandType.StoredProcedure);
+                return await connection.QueryAsync<M_Position>("spGetAllPosition", commandType: CommandType.StoredProcedure);
             }
         }
 
-        public async Task<IEnumerable<M_JobOffers>> GetAllDeleted()
+        public async Task<IEnumerable<M_Position>> GetAllDeleted()
         {
             using (var connection = _dapperContext.CreateConnection())
             {
-                return await connection.QueryAsync<M_JobOffers>("spGetAllJobOffersDeleted", commandType: CommandType.StoredProcedure);
+                return await connection.QueryAsync<M_Position>("spGetAllPositionDeleted", commandType: CommandType.StoredProcedure);
             }
         }
 
-        public async Task<M_JobOffers> GetValue(int id)
+        public async Task<M_Position> GetValue(int id)
         {
-            using(var connection = _dapperContext.CreateConnection())
+            using (var connection = _dapperContext.CreateConnection())
             {
                 var parameters = new DynamicParameters();
                 parameters.Add("@Id", id);
-                return await connection.QueryFirstOrDefaultAsync<M_JobOffers>("spGetJobOffer", commandType: CommandType.StoredProcedure);
+                return await connection.QueryFirstOrDefaultAsync<M_Position>("spGetPosition", parameters, commandType: CommandType.StoredProcedure);
             }
         }
-
         public async Task<int> Recover(int id)
         {
             using(var connection = _dapperContext.CreateConnection())
@@ -109,7 +102,7 @@ namespace NexusGroup.Data.Repositories.JobOffers
                 var parameters = new DynamicParameters();
                 parameters.Add("@Id", id);
                 parameters.Add("@RowsAffected", dbType: DbType.Int32, direction: ParameterDirection.Output);
-                await connection.ExecuteAsync("spRecoverJobOffer", commandType: CommandType.StoredProcedure);
+                await connection.ExecuteAsync("spRecoverTraining", parameters, commandType: CommandType.StoredProcedure);
                 int rowsAffected = parameters.Get<int>("@RowsAffected");
                 return rowsAffected;
             }

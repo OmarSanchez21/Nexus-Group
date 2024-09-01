@@ -11,4 +11,9 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\NexusGroup.Data\NexusGroup.Data.csproj" />
+    <ProjectReference Include="..\NexusGroup.Service\NexusGroup.Service.csproj" />
+  </ItemGroup>
+
 </Project>

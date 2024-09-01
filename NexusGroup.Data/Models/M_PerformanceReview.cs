@@ -13,7 +13,7 @@ namespace NexusGroup.Data.Models
         [Key]
         public int ReviewID { get; set; }
         public int EmployeeID { get; set; }
-        public DateTime RewviewDate { get; set; }
+        public DateTime ReviewDate { get; set; }
         public string Reviewer { get; set; }
         public string ReviewDescription { get; set; }
         public string Observation { get; set; }

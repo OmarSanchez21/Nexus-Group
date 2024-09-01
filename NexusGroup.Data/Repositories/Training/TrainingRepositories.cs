@@ -8,28 +8,25 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace NexusGroup.Data.Repositories.Candidates
+namespace NexusGroup.Data.Repositories.Training
 {
-    public class CandidatesRepositories : ICandidatesRepositories
+    public class TrainingRepositories : ITrainingRepositories
     {
         private readonly IDapperContext _dapperContext;
-        public CandidatesRepositories(IDapperContext dapperContext)
+        public TrainingRepositories(IDapperContext dapperContext)
         {
             _dapperContext = dapperContext;
         }
-        public async Task<int> Add(M_Candidates entity)
+        public async Task<int> Add(M_Training entity)
         {
             using(var connection = _dapperContext.CreateConnection())
             {
                 var parameters = new DynamicParameters();
-                parameters.Add("@FirstName", entity.FirstName);
-                parameters.Add("@LastName", entity.LastName);
-                parameters.Add("@Email", entity.Email);
-                parameters.Add("@CVURL", entity.cvURL);
-                parameters.Add("@ApplicationDate", entity.ApplicationDate);
-                parameters.Add("@IdJobOffer", entity.IdJobOffer);
+                parameters.Add("@EmployeeID", entity.EmployeeID);
+                parameters.Add("@TrainingDate", entity.TrainingDate);
+                parameters.Add("@TrainingDescription", entity.TrainingDescription);
                 parameters.Add("@RowsAffected", dbType: DbType.Int32, direction: ParameterDirection.Output);
-                await connection.ExecuteAsync("spAddCandidates", parameters, commandType: CommandType.StoredProcedure);
+                await connection.ExecuteAsync("spAddTraining", parameters, commandType: CommandType.StoredProcedure);
                 int rowsAffected = parameters.Get<int>("@RowsAffected");
                 return rowsAffected;
             }
@@ -37,12 +34,12 @@ namespace NexusGroup.Data.Repositories.Candidates
 
         public async Task<int> Delete(int id)
         {
-            using(var connection = _dapperContext.CreateConnection())
+            using (var connection = _dapperContext.CreateConnection())
             {
                 var parameters = new DynamicParameters();
                 parameters.Add("@Id", id);
                 parameters.Add("@RowsAffected", dbType: DbType.Int32, direction: ParameterDirection.Output);
-                await connection.ExecuteAsync("spDeleteCandidates", parameters, commandType: CommandType.StoredProcedure);
+                await connection.ExecuteAsync("spPermantlyTraining", parameters, commandType: CommandType.StoredProcedure);
                 int rowsAffected = parameters.Get<int>("@RowsAffected");
                 return rowsAffected;
             }
@@ -55,65 +52,62 @@ namespace NexusGroup.Data.Repositories.Candidates
                 var parameters = new DynamicParameters();
                 parameters.Add("@Id", id);
                 parameters.Add("@RowsAffected", dbType: DbType.Int32, direction: ParameterDirection.Output);
-                await connection.ExecuteAsync("spDeletePermantlyCnadidates", parameters, commandType: CommandType.StoredProcedure);
+                await connection.ExecuteAsync("spDeletePermantlyTraining", parameters, commandType: CommandType.StoredProcedure);
                 int rowsAffected = parameters.Get<int>("@RowsAffected");
                 return rowsAffected;
             }
         }
 
-        public async Task<int> Edit(M_Candidates entity)
-        {
-            using(var connection = _dapperContext.CreateConnection())
-            {
-                var parameters = new DynamicParameters();
-                parameters.Add("@Id", entity.CandidateID);
-                parameters.Add("@FirstName", entity.FirstName);
-                parameters.Add("@LastName", entity.LastName);
-                parameters.Add("@Email", entity.Email);
-                parameters.Add("@CVURL", entity.cvURL);
-                parameters.Add("@ApplicationDate", entity.ApplicationDate);
-                parameters.Add("@IdJobOffer", entity.IdJobOffer);
-                parameters.Add("@RowsAffected", dbType: DbType.Int32, direction: ParameterDirection.Output);
-                await connection.ExecuteAsync("spEditCandidates", parameters, commandType: CommandType.StoredProcedure);
-                int rowsAffected = parameters.Get<int>("@RowsAffected");
-                return rowsAffected;
-            }
-        }
-
-        public async Task<IEnumerable<M_Candidates>> GetAll()
-        {
-            using(var connection = _dapperContext.CreateConnection())
-            {
-                return await connection.QueryAsync<M_Candidates>("spGetAllCandidates", commandType: CommandType.StoredProcedure);
-            }
-        }
-
-        public async Task<IEnumerable<M_Candidates>> GetAllDeleted()
+        public async Task<int> Edit(M_Training entity)
         {
             using (var connection = _dapperContext.CreateConnection())
             {
-                return await connection.QueryAsync<M_Candidates>("spGetAllCandidatesDeleted", commandType: CommandType.StoredProcedure);
+                var parameters = new DynamicParameters();
+                parameters.Add("@Id", entity.TrainingID);
+                parameters.Add("@EmployeeID", entity.EmployeeID);
+                parameters.Add("@TrainingDate", entity.TrainingDate);
+                parameters.Add("@TrainingDescription", entity.TrainingDescription);
+                parameters.Add("@RowsAffected", dbType: DbType.Int32, direction: ParameterDirection.Output);
+                await connection.ExecuteAsync("spEditTraining", parameters, commandType: CommandType.StoredProcedure);
+                int rowsAffected = parameters.Get<int>("@RowsAffected");
+                return rowsAffected;
             }
         }
 
-        public async Task<M_Candidates> GetValue(int id)
+        public async Task<IEnumerable<M_Training>> GetAll()
+        {
+            using (var connection = _dapperContext.CreateConnection())
+            {
+                return await connection.QueryAsync<M_Training>("spGetAllTraining", commandType: CommandType.StoredProcedure);
+            }
+        }
+
+        public async Task<IEnumerable<M_Training>> GetAllDeleted()
+        {
+            using(var connection = _dapperContext.CreateConnection())
+            {
+                return await connection.QueryAsync<M_Training>("spGetAllTrainingDeleted", commandType: CommandType.StoredProcedure);
+            }
+        }
+
+        public async Task<M_Training> GetValue(int id)
         {
             using(var connection = _dapperContext.CreateConnection())
             {
                 var parameters = new DynamicParameters();
                 parameters.Add("@Id", id);
-                return await connection.QueryFirstOrDefaultAsync<M_Candidates>("spGetCandidates", parameters, commandType: CommandType.StoredProcedure);
+                return await connection.QueryFirstOrDefaultAsync<M_Training>("spGetTraining", parameters, commandType: CommandType.StoredProcedure);
             }
         }
 
         public async Task<int> Recover(int id)
         {
-            using (var connection = _dapperContext.CreateConnection())
+            using(var connection = _dapperContext.CreateConnection())
             {
                 var parameters = new DynamicParameters();
                 parameters.Add("@Id", id);
                 parameters.Add("@RowsAffected", dbType: DbType.Int32, direction: ParameterDirection.Output);
-                await connection.ExecuteAsync("spRecoverCandidates", parameters, commandType: CommandType.StoredProcedure);
+                await connection.ExecuteAsync("spRecoverTraining", parameters, commandType: CommandType.StoredProcedure);
                 int rowsAffected = parameters.Get<int>("@RowsAffected");
                 return rowsAffected;
             }

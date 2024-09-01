@@ -11,6 +11,6 @@ namespace NexusGroup.Data.Repositories.AccessLevels
     public interface IAccessLevelsRepositories
     {
         Task<IEnumerable<M_AccessLevels>> GetAll();
-        Task<M_AccessLevels> GetValue(int id);
+        Task<M_AccessLevels> GetValue(string id);
     }
 }
