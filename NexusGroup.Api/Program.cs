@@ -12,6 +12,7 @@ References.AddDapperConnection(builder.Services, builder.Configuration);
 References.AddAccessLevelsServices(builder.Services);
 References.AddPositionService(builder.Services);
 References.AddJobOffersService(builder.Services);
+References.AddCandidatesService(builder.Services);
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

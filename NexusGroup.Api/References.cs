@@ -1,8 +1,10 @@
 ﻿using NexusGroup.Data.BaseData;
 using NexusGroup.Data.Repositories.AccessLevels;
+using NexusGroup.Data.Repositories.Candidates;
 using NexusGroup.Data.Repositories.JobOffers;
 using NexusGroup.Data.Repositories.Position;
 using NexusGroup.Service.Services.AccessLevels;
+using NexusGroup.Service.Services.Candidates;
 using NexusGroup.Service.Services.JobOffers;
 using NexusGroup.Service.Services.Position;
 namespace NexusGroup.Api
@@ -28,6 +30,11 @@ namespace NexusGroup.Api
         {
             services.AddScoped<IJobOffersService, JobOffersService>();
             services.AddTransient<IJobOffersRepositories, JobOffersRepositories>();
+        }
+        public static void AddCandidatesService(IServiceCollection services)
+        {
+            services.AddScoped<ICandidatesService, CandidatesService>();
+            services.AddTransient<ICandidatesRepositories, CandidatesRepositories>();
         }
     }
 }

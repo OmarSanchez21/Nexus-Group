@@ -1,9 +1,7 @@
-﻿using NexusGroup.Data.Models;
-using NexusGroup.Data.Repositories.JobOffers;
+﻿using NexusGroup.Data.Repositories.Candidates;
 using NexusGroup.Service.Base;
 using NexusGroup.Service.DTOs;
 using NexusGroup.Service.Mappers;
-using NexusGroup.Service.Validations;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
@@ -11,34 +9,29 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace NexusGroup.Service.Services.JobOffers
+namespace NexusGroup.Service.Services.Candidates
 {
-    public class JobOffersService : IJobOffersService
+    public class CandidatesService : ICandidatesService
     {
-        private readonly IJobOffersRepositories _repositories;
-        public JobOffersService(IJobOffersRepositories jobOffersRepositories)
+        private readonly ICandidatesRepositories _repositories;
+        public CandidatesService(ICandidatesRepositories candidatesRepositories)
         {
-            _repositories = jobOffersRepositories;
+            _repositories = candidatesRepositories;
         }
-        public async Task<ServiceResult> Add(AddJobOffersDTO dto)
+        public async Task<ServiceResult> Add(AddCandidateDTO dto)
         {
             ServiceResult result = new ServiceResult();
             try
             {
-                result = JobOffersValidations.ValidationsAdd(dto);
-                if (!result.Success)
-                {
-                    return result;
-                }
-                var entity = JobOffersMappers.toModelAdd(dto);
+                var entity = CandidateMappers.toModelAdd(dto);
                 var rowsAffected = await _repositories.Add(entity);
-                if (rowsAffected <= 0)
+                if(rowsAffected <= 0)
                 {
                     result.Success = false;
-                    result.Message = "Failed to add job offer";
+                    result.Message = "Failed to add candidate";
                     return result;
                 }
-                result.Message = "Job offer added successfully";
+                result.Message = "Candidate was added successfully";
                 result.Data = entity;
             }
             catch (SqlException sqlexception)
@@ -67,17 +60,17 @@ namespace NexusGroup.Service.Services.JobOffers
             try
             {
                 var rowsAffected = await _repositories.Delete(id);
-                if(rowsAffected <= 0)
+                if (rowsAffected <= 0)
                 {
                     result.Success = false;
-                    result.Message = "Failed deleted job offfer";
+                    result.Message = "Failed deleted candidate";
                     return result;
                 }
-                result.Message = "Job offer deleted successfully";
+                result.Message = "Candidate deleted successfully";
             }
             catch (SqlException sqlexception)
             {
-                new LogConfiguration.ExceptionServer("Added a Job Offer.", sqlexception);
+                new LogConfiguration.ExceptionServer("Delete a candidate.", sqlexception);
                 result.Success = false;
                 result.Message = "Error on DataBase.";
                 result.Data = sqlexception.Message;
@@ -104,14 +97,14 @@ namespace NexusGroup.Service.Services.JobOffers
                 if (rowsAffected <= 0)
                 {
                     result.Success = false;
-                    result.Message = "Failed deleted job offfer";
+                    result.Message = "Failed deleted candidate";
                     return result;
                 }
-                result.Message = "Job offer deleted successfully";
+                result.Message = "Candidate deleted successfully";
             }
             catch (SqlException sqlexception)
             {
-                new LogConfiguration.ExceptionServer("Added a Job Offer.", sqlexception);
+                new LogConfiguration.ExceptionServer("Delete permantly candidate.", sqlexception);
                 result.Success = false;
                 result.Message = "Error on DataBase.";
                 result.Data = sqlexception.Message;
@@ -129,25 +122,25 @@ namespace NexusGroup.Service.Services.JobOffers
             return result;
         }
 
-        public async Task<ServiceResult> Edit(EditJobOffersDTO dto)
+        public async Task<ServiceResult> Edit(EditCandidateDTO dto)
         {
             ServiceResult result = new ServiceResult();
             try
             {
-                var entity = JobOffersMappers.toModelEdit(dto);
+                var entity = CandidateMappers.toModelEdit(dto);
                 var rowsAffected = await _repositories.Edit(entity);
                 if (rowsAffected <= 0)
                 {
                     result.Success = false;
-                    result.Message = "Failed to edit job offer";
+                    result.Message = "Failed to edit candidate";
                     return result;
                 }
-                result.Message = "Job offer edited successfully";
+                result.Message = "Candidate was edited successfully";
                 result.Data = entity;
             }
             catch (SqlException sqlexception)
             {
-                new LogConfiguration.ExceptionServer("Edit a Job Offer.", sqlexception);
+                new LogConfiguration.ExceptionServer("edited a Job Offer.", sqlexception);
                 result.Success = false;
                 result.Message = "Error on DataBase.";
                 result.Data = sqlexception.Message;
@@ -174,15 +167,15 @@ namespace NexusGroup.Service.Services.JobOffers
                 if(entity == null)
                 {
                     result.Success = false;
-                    result.Message = "The id is not found";
+                    result.Message = "The id dont have a value";
                     return result;
                 }
-                result.Message = "the job offer is founded";
+                result.Message = "Founded successfully";
                 result.Data = entity;
             }
             catch (SqlException sqlexception)
             {
-                new LogConfiguration.ExceptionServer("Edit a Job Offer.", sqlexception);
+                new LogConfiguration.ExceptionServer("edited a Job Offer.", sqlexception);
                 result.Success = false;
                 result.Message = "Error on DataBase.";
                 result.Data = sqlexception.Message;
@@ -205,22 +198,31 @@ namespace NexusGroup.Service.Services.JobOffers
             ServiceResult result = new ServiceResult();
             try
             {
-                var entities = await _repositories.GetAll();
-                var data = entities.Select(job => new JobOffersDTO() 
+                var entity = await _repositories.GetAll();
+                if (entity == null)
                 {
-                    JobOfferID = job.JobOfferID,
-                    Title = job.Title,
-                    Description = job.Description,
-                    StartPublication = DateOnly.FromDateTime(job.StartPublication),
-                    EndPublication = DateOnly.FromDateTime(job.EndPublication),
-                    CreateAt = job.CreateAt
+                    result.Success = false;
+                    result.Message = "They dont have a value";
+                    return result;
+                }
+                var entities = entity.Select(cd => new CandidateDTO()
+                {
+                    CandidateID = cd.CandidateID,
+                    FirstName = cd.FirstName,
+                    LastName = cd.LastName,
+                    IdJobOffer = cd.IdJobOffer,
+                    Email = cd.Email,
+                    ApplicationDate = DateOnly.FromDateTime(cd.ApplicationDate),
+                    cvURL = cd.cvURL,
+                    CreateAt = cd.CreateAt
+
                 }).AsEnumerable();
-                result.Message = "All job offers";
-                result.Data = data;
+                result.Message = "All found";
+                result.Data = entities;
             }
             catch (SqlException sqlexception)
             {
-                new LogConfiguration.ExceptionServer("Edit a Job Offer.", sqlexception);
+                new LogConfiguration.ExceptionServer("edited a Job Offer.", sqlexception);
                 result.Success = false;
                 result.Message = "Error on DataBase.";
                 result.Data = sqlexception.Message;
@@ -243,22 +245,19 @@ namespace NexusGroup.Service.Services.JobOffers
             ServiceResult result = new ServiceResult();
             try
             {
-                var entities = await _repositories.GetAllDeleted();
-                var data = entities.Select(job => new M_JobOffers()
+                var entity = await _repositories.GetAllDeleted();
+                if (entity == null)
                 {
-                    JobOfferID = job.JobOfferID,
-                    Title = job.Title,
-                    StartPublication = job.StartPublication,
-                    EndPublication = job.EndPublication,
-                    CreateAt = job.CreateAt,
-                    DeleteAt = job.DeleteAt
-                }).AsEnumerable();
-                result.Message = "All Deleted job offers";
-                result.Data = data;
+                    result.Success = false;
+                    result.Message = "They dont have a value";
+                    return result;
+                }
+                result.Message = "All found";
+                result.Data = entity;
             }
             catch (SqlException sqlexception)
             {
-                new LogConfiguration.ExceptionServer("Edit a Job Offer.", sqlexception);
+                new LogConfiguration.ExceptionServer("edited a Job Offer.", sqlexception);
                 result.Success = false;
                 result.Message = "Error on DataBase.";
                 result.Data = sqlexception.Message;
@@ -285,14 +284,14 @@ namespace NexusGroup.Service.Services.JobOffers
                 if (rowsAffected <= 0)
                 {
                     result.Success = false;
-                    result.Message = "Failed recover job offfer";
+                    result.Message = "Failed recover candidate";
                     return result;
                 }
-                result.Message = "Job offer recover successfully";
+                result.Message = "Candidate recover successfully";
             }
             catch (SqlException sqlexception)
             {
-                new LogConfiguration.ExceptionServer("Added a Job Offer.", sqlexception);
+                new LogConfiguration.ExceptionServer("recover candidate.", sqlexception);
                 result.Success = false;
                 result.Message = "Error on DataBase.";
                 result.Data = sqlexception.Message;

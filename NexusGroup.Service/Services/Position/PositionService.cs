@@ -2,6 +2,7 @@
 using NexusGroup.Data.Repositories.Position;
 using NexusGroup.Service.Base;
 using NexusGroup.Service.DTOs;
+using NexusGroup.Service.Validations;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
@@ -23,6 +24,11 @@ namespace NexusGroup.Service.Services.Position
             ServiceResult result = new ServiceResult();
             try
             {
+                result = PositionValidations.ValidationsAdd(dto);
+                if (!result.Success)
+                {
+                    return result;
+                }
                 var entity = new M_Position
                 {
                     Title = dto.Title
@@ -130,6 +136,11 @@ namespace NexusGroup.Service.Services.Position
             ServiceResult result = new ServiceResult();
             try
             {
+                result = PositionValidations.ValidationsEdit(dto);
+                if (!result.Success)
+                {
+                    return result;
+                }
                 var entity = new M_Position
                 {
                     PositionID = dto.Id,
