@@ -76,7 +76,6 @@ namespace NexusGroup.Data.Repositories.Employees
                 parameters.Add("@LastName", entity.LastName);
                 parameters.Add("@Email", entity.Email);
                 parameters.Add("@Username", entity.Username);
-                parameters.Add("@Password", entity.Password);
                 parameters.Add("@PhotoURL", entity.photoURL);
                 parameters.Add("@Salary", entity.Salary);
                 parameters.Add("@PositionID", entity.PositionID);

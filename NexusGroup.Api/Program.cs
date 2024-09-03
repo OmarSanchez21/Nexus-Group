@@ -13,6 +13,8 @@ References.AddAccessLevelsServices(builder.Services);
 References.AddPositionService(builder.Services);
 References.AddJobOffersService(builder.Services);
 References.AddCandidatesService(builder.Services);
+References.AddAuthService(builder.Services);
+References.AddEmployeeService(builder.Services);
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
