@@ -10,9 +10,8 @@ namespace NexusGroup.Service.Validations
 {
     public static class EmployeeValidation
     {
-        private static ServiceResult Validations(string cedula, string firstname, string lastname, string email, string username, string password, string photo, decimal salary)
+        private static string Validations(string cedula, string firstname, string lastname, string email, string username, string password, string photo, decimal salary)
         {
-            ServiceResult result = new ServiceResult();
             StringBuilder sb = new StringBuilder();
 
             if (string.IsNullOrEmpty(cedula))
@@ -39,20 +38,17 @@ namespace NexusGroup.Service.Validations
             {
                 sb.AppendLine("The username cannot be empty");
             }
-            if(sb.Length > 0)
-            {
-                result.Success = false;
-                result.Message = sb.ToString();
-            }
-            return result;
+            return sb.ToString();
         }
         public static ServiceResult ValidateAdd(AddEmployeeDTO dto)
         {
-            return Validations(dto.Cedula, dto.FirstName, dto.LastName, dto.Email, dto.Username, dto.Password, dto.photoURL, dto.Salary);
+            string validation = Validations(dto.Cedula, dto.FirstName, dto.LastName, dto.Email, dto.Username, dto.Password, dto.photoURL, dto.Salary);
+            return FuncCore.CreateServiceResultValidations(validation);
         }
         public static ServiceResult ValidateEdit(EditEmployeeDTO dto)
         {
-            return Validations(dto.Cedula, dto.FirstName, dto.LastName, dto.Email, dto.Username, dto.Password, dto.photoURL, dto.Salary);
+            string validation = Validations(dto.Cedula, dto.FirstName, dto.LastName, dto.Email, dto.Username, dto.Password, dto.photoURL, dto.Salary);
+            return FuncCore.CreateServiceResultValidations(validation);
         }
     }
 }

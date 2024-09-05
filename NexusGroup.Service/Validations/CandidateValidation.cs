@@ -11,9 +11,8 @@ namespace NexusGroup.Service.Validations
 {
     public static class CandidateValidation
     {
-        private static ServiceResult Validations(string firstname, string lastname, string email, string cvUrl, int idjoboffer)
+        private static string Validations(string firstname, string lastname, string email, string cvUrl, int idjoboffer)
         {
-            ServiceResult result = new ServiceResult();
             StringBuilder sb = new StringBuilder();
             if (string.IsNullOrEmpty(firstname))
             {
@@ -43,20 +42,17 @@ namespace NexusGroup.Service.Validations
             {
                 sb.AppendLine("JobOffer is not selected");
             }
-            if (sb.Length > 0) 
-            {
-                result.Success = false;
-                result.Message = sb.ToString();
-            }
-            return result;
+            return sb.ToString();
         }
         public static ServiceResult ValidationAdd(AddCandidateDTO dto)
         {
-            return Validations(dto.FirstName, dto.LastName, dto.Email, dto.cvURL, dto.IdJobOffer);
+            string validation = Validations(dto.FirstName, dto.LastName, dto.Email, dto.cvURL, dto.IdJobOffer);
+            return FuncCore.CreateServiceResultValidations(validation);
         }
         public static ServiceResult ValidationEdit(EditCandidateDTO dto)
         {
-            return Validations(dto.FirstName, dto.LastName, dto.Email, dto.cvURL, dto.IdJobOffer);
+            string validation = Validations(dto.FirstName, dto.LastName, dto.Email, dto.cvURL, dto.IdJobOffer);
+            return FuncCore.CreateServiceResultValidations(validation);
         }
     }
 }

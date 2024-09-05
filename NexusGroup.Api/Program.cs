@@ -15,6 +15,8 @@ References.AddJobOffersService(builder.Services);
 References.AddCandidatesService(builder.Services);
 References.AddAuthService(builder.Services);
 References.AddEmployeeService(builder.Services);
+References.AddEmployeePermissionService(builder.Services);
+References.AddDepartmentService(builder.Services);
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

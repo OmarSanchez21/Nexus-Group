@@ -1,5 +1,5 @@
 ﻿using NexusGroup.Data.Models;
-using NexusGroup.Data.Repositories.Candidates;
+using NexusGroup.Data.Repositories.Department;
 using NexusGroup.Service.Base;
 using NexusGroup.Service.DTOs;
 using NexusGroup.Service.Mappers;
@@ -11,29 +11,29 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace NexusGroup.Service.Services.Candidates
+namespace NexusGroup.Service.Services.Department
 {
-    public class CandidatesService : ICandidatesService
+    public class DepartmentService : IDepartmentService
     {
-        private readonly ICandidatesRepositories _repositories;
-        private const string TableName = "Candidates";
-        public CandidatesService(ICandidatesRepositories candidatesRepositories)
+        private readonly IDepartmentRepositories _repositories;
+        private const string TableName = "Department";
+        public DepartmentService(IDepartmentRepositories departmentRepositories)
         {
-            _repositories = candidatesRepositories;
+            _repositories = departmentRepositories;
         }
-        public async Task<ServiceResult> Add(AddCandidateDTO dto)
+        public async Task<ServiceResult> Add(AddDepartmentDTO dto)
         {
             ServiceResult result = new ServiceResult();
             try
             {
-                result = CandidateValidation.ValidationAdd(dto);
+                result = DepartmentValidation.ValidationAdd(dto);
                 if (!result.Success)
                 {
                     return result;
                 }
-                var entity = CandidateMappers.toModelAdd(dto);
+                var entity = DepartmentMappers.ToModelAdd(dto);
                 var rowsAffected = await _repositories.Add(entity);
-                if(rowsAffected <= 0)
+                if (rowsAffected <= 0)
                 {
                     result.Success = false;
                     result.Message = ServiceMessages.AddFail;
@@ -136,17 +136,17 @@ namespace NexusGroup.Service.Services.Candidates
             return result;
         }
 
-        public async Task<ServiceResult> Edit(EditCandidateDTO dto)
+        public async Task<ServiceResult> Edit(EditDepartmentDTO dto)
         {
             ServiceResult result = new ServiceResult();
             try
             {
-                result = CandidateValidation.ValidationEdit(dto);
+                result = DepartmentValidation.ValidationEdit(dto);
                 if (!result.Success)
                 {
                     return result;
                 }
-                var entity = CandidateMappers.toModelEdit(dto);
+                var entity = DepartmentMappers.ToModelEdit(dto);
                 var rowsAffected = await _repositories.Edit(entity);
                 if (rowsAffected <= 0)
                 {
@@ -185,7 +185,7 @@ namespace NexusGroup.Service.Services.Candidates
             try
             {
                 var entity = await _repositories.GetValue(id);
-                if(entity == null)
+                if (entity == null)
                 {
                     result.Success = false;
                     result.Message = ServiceMessages.NotFound;
@@ -196,8 +196,8 @@ namespace NexusGroup.Service.Services.Candidates
             }
             catch (SqlException sqlexception)
             {
-                string acccion = ServiceMessages.LogHelper("get", TableName);
-                new LogConfiguration.ExceptionServer(acccion, sqlexception);
+                string accion = ServiceMessages.LogHelper("get", TableName);
+                new LogConfiguration.ExceptionServer(accion, sqlexception);
                 result.Success = false;
                 result.Message = ServiceMessages.DatabaseError;
                 result.Data = sqlexception.Message;
@@ -228,7 +228,7 @@ namespace NexusGroup.Service.Services.Candidates
                     result.Message = ServiceMessages.NotFoundAll;
                     return result;
                 }
-                var entities = CandidateMappers.toDto(entity);
+                var entities = DepartmentMappers.toDTO(entity);
                 result.Message = ServiceMessages.GetAllSuccess;
                 result.Data = entities;
             }
@@ -266,20 +266,8 @@ namespace NexusGroup.Service.Services.Candidates
                     result.Message = ServiceMessages.NotFoundAll;
                     return result;
                 }
-                var data = entity.Select(cd => new M_Candidates()
-                {
-                    CandidateID = cd.CandidateID,
-                    FirstName = cd.FirstName,
-                    LastName = cd.LastName,
-                    ApplicationDate = cd.ApplicationDate,
-                    cvURL = cd.cvURL,
-                    Email = cd.Email,
-                    IdJobOffer = cd.IdJobOffer,
-                    CreateAt = cd.CreateAt,
-                    DeleteAt = cd.DeleteAt,
-                });
                 result.Message = ServiceMessages.GetAllSuccess;
-                result.Data = data;
+                result.Data = entity;
             }
             catch (SqlException sqlexception)
             {

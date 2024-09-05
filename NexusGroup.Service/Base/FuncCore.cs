@@ -15,5 +15,15 @@ namespace NexusGroup.Service.Base
         {
             return email.Contains("@") && email.Contains(".");
         }
+        public static ServiceResult CreateServiceResultValidations(string message)
+        {
+            ServiceResult result = new ServiceResult();
+            if (!string.IsNullOrEmpty(message))
+            {
+                result.Success = false;
+                result.Message = message;
+            }
+            return result;
+        }
     }
 }

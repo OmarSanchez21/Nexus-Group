@@ -10,65 +10,36 @@ namespace NexusGroup.Service.Validations
 {
     public static class JobOffersValidations
     {
-        public static ServiceResult ValidationsAdd(AddJobOffersDTO dto)
+        private static string Validations(string title, string description, DateOnly startpublication, DateOnly endpublication)
         {
-            ServiceResult result = new ServiceResult();
             StringBuilder sb = new StringBuilder();
-            if (string.IsNullOrEmpty(dto.Title))
+            if (string.IsNullOrEmpty(title))
             {
-                result.Success = false;
-                sb.AppendLine("The title cannot be empty.");
+                sb.AppendLine("Title cannot be empty");
             }
-            if (string.IsNullOrEmpty(dto.Description))
+            if (string.IsNullOrEmpty(description)) 
             {
-                result.Success = false;
-                sb.AppendLine("The description cannot be empty.");
+                sb.AppendLine("Description cannot be empty");
             }
-            if (dto.StartPublication > dto.EndPublication) 
+            if(startpublication > endpublication)
             {
-                result.Success = false;
                 sb.AppendLine("The start date cannot be later than the end date.");
             }
-            if(dto.EndPublication <= DateOnly.FromDateTime(DateTime.Now))
+            if (endpublication <= DateOnly.FromDateTime(DateTime.Now))
             {
-                result.Success = false;
                 sb.AppendLine("The end publication date must be a future date.");
             }
-            if(sb.Length > 0)
-            {
-                result.Message = sb.ToString();
-            }
-            return result;
+            return sb.ToString();
+        }
+        public static ServiceResult ValidationsAdd(AddJobOffersDTO dto)
+        {
+            string validation = Validations(dto.Title, dto.Description, dto.StartPublication, dto.EndPublication);
+            return FuncCore.CreateServiceResultValidations(validation);
         }
         public static ServiceResult ValidationsEdit(EditJobOffersDTO dto)
         {
-            ServiceResult result = new ServiceResult();
-            StringBuilder sb = new StringBuilder();
-            if (string.IsNullOrEmpty(dto.Title))
-            {
-                result.Success = false;
-                sb.AppendLine("The title cannot be empty.");
-            }
-            if (string.IsNullOrEmpty(dto.Description))
-            {
-                result.Success = false;
-                sb.AppendLine("The description cannot be empty.");
-            }
-            if (dto.StartPublication > dto.EndPublication)
-            {
-                result.Success = false;
-                sb.AppendLine("The start date cannot be later than the end date.");
-            }
-            if (dto.EndPublication <= DateOnly.FromDateTime(DateTime.Now))
-            {
-                result.Success = false;
-                sb.AppendLine("The end publication date must be a future date.");
-            }
-            if (sb.Length > 0)
-            {
-                result.Message = sb.ToString();
-            }
-            return result;
+            string validation = Validations(dto.Title, dto.Description, dto.StartPublication, dto.EndPublication);
+            return FuncCore.CreateServiceResultValidations(validation);
         }
     }
 }

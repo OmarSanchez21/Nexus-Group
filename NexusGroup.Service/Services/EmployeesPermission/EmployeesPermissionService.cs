@@ -1,5 +1,4 @@
-﻿using NexusGroup.Data.Models;
-using NexusGroup.Data.Repositories.Candidates;
+﻿using NexusGroup.Data.Repositories.EmployeesPermission;
 using NexusGroup.Service.Base;
 using NexusGroup.Service.DTOs;
 using NexusGroup.Service.Mappers;
@@ -11,27 +10,27 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace NexusGroup.Service.Services.Candidates
+namespace NexusGroup.Service.Services.EmployeesPermission
 {
-    public class CandidatesService : ICandidatesService
+    public class EmployeesPermissionService : IEmployeesPermissionService
     {
-        private readonly ICandidatesRepositories _repositories;
-        private const string TableName = "Candidates";
-        public CandidatesService(ICandidatesRepositories candidatesRepositories)
+        private readonly IEmployeesPermissionRepositories _repositories;
+        private const string TableName = "Employees Permission";
+        public EmployeesPermissionService(IEmployeesPermissionRepositories employeesPermissionRepositories)
         {
-            _repositories = candidatesRepositories;
+            _repositories = employeesPermissionRepositories;
         }
-        public async Task<ServiceResult> Add(AddCandidateDTO dto)
+        public async Task<ServiceResult> Add(AddEmployeePermissionDTO dto)
         {
             ServiceResult result = new ServiceResult();
             try
             {
-                result = CandidateValidation.ValidationAdd(dto);
+                result = EmployeesPermissionValidation.ValidationsAdd(dto);
                 if (!result.Success)
                 {
                     return result;
                 }
-                var entity = CandidateMappers.toModelAdd(dto);
+                var entity = EmployeePermissionMappers.ToModelAdd(dto);
                 var rowsAffected = await _repositories.Add(entity);
                 if(rowsAffected <= 0)
                 {
@@ -70,13 +69,15 @@ namespace NexusGroup.Service.Services.Candidates
             try
             {
                 var rowsAffected = await _repositories.Delete(id);
-                if (rowsAffected <= 0)
+                if(rowsAffected <= 0)
                 {
                     result.Success = false;
                     result.Message = ServiceMessages.DeleteFail;
-                    return result;
                 }
-                result.Message = ServiceMessages.DeleteSuccess;
+                else
+                {
+                    result.Message = ServiceMessages.DeleteSuccess;
+                }
             }
             catch (SqlException sqlexception)
             {
@@ -110,9 +111,11 @@ namespace NexusGroup.Service.Services.Candidates
                 {
                     result.Success = false;
                     result.Message = ServiceMessages.DeleteFail;
-                    return result;
                 }
-                result.Message = ServiceMessages.DeleteSuccess;
+                else
+                {
+                    result.Message = ServiceMessages.DeleteSuccess;
+                }
             }
             catch (SqlException sqlexception)
             {
@@ -136,17 +139,17 @@ namespace NexusGroup.Service.Services.Candidates
             return result;
         }
 
-        public async Task<ServiceResult> Edit(EditCandidateDTO dto)
+        public async Task<ServiceResult> Edit(EditEmployeePermissionDTO dto)
         {
             ServiceResult result = new ServiceResult();
             try
             {
-                result = CandidateValidation.ValidationEdit(dto);
+                result = EmployeesPermissionValidation.ValidationsEdit(dto);
                 if (!result.Success)
                 {
                     return result;
                 }
-                var entity = CandidateMappers.toModelEdit(dto);
+                var entity = EmployeePermissionMappers.ToModelEdit(dto);
                 var rowsAffected = await _repositories.Edit(entity);
                 if (rowsAffected <= 0)
                 {
@@ -196,8 +199,8 @@ namespace NexusGroup.Service.Services.Candidates
             }
             catch (SqlException sqlexception)
             {
-                string acccion = ServiceMessages.LogHelper("get", TableName);
-                new LogConfiguration.ExceptionServer(acccion, sqlexception);
+                string accion = ServiceMessages.LogHelper("get", TableName);
+                new LogConfiguration.ExceptionServer(accion, sqlexception);
                 result.Success = false;
                 result.Message = ServiceMessages.DatabaseError;
                 result.Data = sqlexception.Message;
@@ -221,16 +224,16 @@ namespace NexusGroup.Service.Services.Candidates
             ServiceResult result = new ServiceResult();
             try
             {
-                var entity = await _repositories.GetAll();
-                if (entity == null)
+                var entities = await _repositories.GetAll();
+                if(entities == null)
                 {
                     result.Success = false;
                     result.Message = ServiceMessages.NotFoundAll;
                     return result;
                 }
-                var entities = CandidateMappers.toDto(entity);
+                var data = EmployeePermissionMappers.ToDTO(entities);
                 result.Message = ServiceMessages.GetAllSuccess;
-                result.Data = entities;
+                result.Data = data;
             }
             catch (SqlException sqlexception)
             {
@@ -259,27 +262,15 @@ namespace NexusGroup.Service.Services.Candidates
             ServiceResult result = new ServiceResult();
             try
             {
-                var entity = await _repositories.GetAllDeleted();
-                if (entity == null)
+                var entities = await _repositories.GetAllDeleted();
+                if (entities == null)
                 {
                     result.Success = false;
                     result.Message = ServiceMessages.NotFoundAll;
                     return result;
                 }
-                var data = entity.Select(cd => new M_Candidates()
-                {
-                    CandidateID = cd.CandidateID,
-                    FirstName = cd.FirstName,
-                    LastName = cd.LastName,
-                    ApplicationDate = cd.ApplicationDate,
-                    cvURL = cd.cvURL,
-                    Email = cd.Email,
-                    IdJobOffer = cd.IdJobOffer,
-                    CreateAt = cd.CreateAt,
-                    DeleteAt = cd.DeleteAt,
-                });
                 result.Message = ServiceMessages.GetAllSuccess;
-                result.Data = data;
+                result.Data = entities;
             }
             catch (SqlException sqlexception)
             {
@@ -313,9 +304,11 @@ namespace NexusGroup.Service.Services.Candidates
                 {
                     result.Success = false;
                     result.Message = ServiceMessages.RecoverFail;
-                    return result;
                 }
-                result.Message = ServiceMessages.RecoverSuccess;
+                else
+                {
+                    result.Message = ServiceMessages.RecoverSuccess;
+                }
             }
             catch (SqlException sqlexception)
             {

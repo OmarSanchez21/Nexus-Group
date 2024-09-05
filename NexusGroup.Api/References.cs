@@ -2,13 +2,17 @@
 using NexusGroup.Data.Repositories.AccessLevels;
 using NexusGroup.Data.Repositories.Auth;
 using NexusGroup.Data.Repositories.Candidates;
+using NexusGroup.Data.Repositories.Department;
 using NexusGroup.Data.Repositories.Employees;
+using NexusGroup.Data.Repositories.EmployeesPermission;
 using NexusGroup.Data.Repositories.JobOffers;
 using NexusGroup.Data.Repositories.Position;
 using NexusGroup.Service.Services.AccessLevels;
 using NexusGroup.Service.Services.Auth;
 using NexusGroup.Service.Services.Candidates;
+using NexusGroup.Service.Services.Department;
 using NexusGroup.Service.Services.Employees;
+using NexusGroup.Service.Services.EmployeesPermission;
 using NexusGroup.Service.Services.JobOffers;
 using NexusGroup.Service.Services.Position;
 namespace NexusGroup.Api
@@ -49,6 +53,16 @@ namespace NexusGroup.Api
         {
             services.AddScoped<IEmployeesService, EmployeesService>();
             services.AddTransient<IEmployeesRepositories, EmployeesRepositories>();
+        }
+        public static void AddEmployeePermissionService(IServiceCollection services)
+        {
+            services.AddScoped<IEmployeesPermissionService, EmployeesPermissionService>();
+            services.AddTransient<IEmployeesPermissionRepositories, EmployeesPermissionRepositories>();
+        }
+        public static void AddDepartmentService(IServiceCollection services)
+        {
+            services.AddScoped<IDepartmentService, DepartmentService>();
+            services.AddTransient<IDepartmentRepositories, DepartmentRepositories>();
         }
     }
 }

@@ -10,35 +10,28 @@ namespace NexusGroup.Service.Validations
 {
     public static class PositionValidations
     {
+        public static string Validation(string title)
+        {
+            StringBuilder sb = new StringBuilder();
+            if (string.IsNullOrEmpty(title))
+            {
+                sb.AppendLine("Title cannot be empty");
+            }
+            if (title.Length < 0)
+            {
+                sb.AppendLine("The length for the title can not be higher than 100 caractheres");
+            }
+            return sb.ToString();
+        }
         public static ServiceResult ValidationsAdd(AddPositionDTO dto)
         {
-            ServiceResult result = new ServiceResult();
-            if (string.IsNullOrEmpty(dto.Title))
-            {
-                result.Success = false;
-                result.Message = "The title can no be empty";
-            }
-            if(dto.Title.Length > 100)
-            {
-                result.Success = false;
-                result.Message = "The length for the title can not be higher than 100 caractheres";
-            }
-            return result;
+            string validation = Validation(dto.Title);
+            return FuncCore.CreateServiceResultValidations(validation);
         }
         public static ServiceResult ValidationsEdit(EditPositionDTO dto)
         {
-            ServiceResult result = new ServiceResult();
-            if (string.IsNullOrEmpty(dto.Title))
-            {
-                result.Success = false;
-                result.Message = "The title can no be empty";
-            }
-            if (dto.Title.Length > 100)
-            {
-                result.Success = false;
-                result.Message = "The length for the title can not be higher than 100 caractheres";
-            }
-            return result;
+            string validation = Validation(dto.Title);
+            return FuncCore.CreateServiceResultValidations(validation);
         }
     }
 }

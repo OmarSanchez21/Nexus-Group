@@ -10,6 +10,22 @@ namespace NexusGroup.Service.Mappers
 {
     public static class CandidateMappers
     {
+        public static IEnumerable<CandidateDTO> toDto(IEnumerable<M_Candidates> model)
+        {
+
+            IEnumerable<CandidateDTO> dto = model.Select(model => new CandidateDTO()
+            {
+                CandidateID = model.CandidateID,
+                FirstName = model.FirstName,
+                LastName = model.LastName,
+                Email = model.Email,
+                cvURL = model.cvURL,
+                ApplicationDate = DateOnly.FromDateTime(model.ApplicationDate),
+                IdJobOffer = model.IdJobOffer,
+                CreateAt = model.CreateAt
+            });
+            return dto;
+        }
         public static M_Candidates toModelAdd(this AddCandidateDTO dto)
         {
             M_Candidates model = new M_Candidates()
