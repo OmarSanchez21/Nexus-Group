@@ -12,11 +12,9 @@ namespace NexusGroup.Service.Base
         public const string AddSuccess = "Added successfully.";
         public const string EditSuccess = "Edited successfully.";
         public const string DeleteSuccess = "Deleted successfully.";
-        public const string DeletePermantlySuccess = "Deleted Permantly successfully.";
         public const string RecoverSuccess = "Recovered successfully.";
         public const string GetAllSuccess = "Get All successfully";
         public const string GetValue = "Item Found";
-        public const string GetAllDeletedSuccess = "Get All Deleted successfully";
         //Mensaje de Error
         public const string AddFail = "Failed to add.";
         public const string EditFail = "Failed to edit.";
@@ -24,9 +22,14 @@ namespace NexusGroup.Service.Base
         public const string RecoverFail = "Failed to recover.";
         //Mensajes de Excepcion
         public const string NotFound = "The item was not found.";
+        public const string NotFoundAll = "The List is empty";
         public const string DatabaseError = "Error in the database.";
         public const string InternalError = "Internal server error.";
-        public static string GetErrorLog(string type, string table)
+        public static string LogHelper(string accion, string table)
+        {
+            return GetErrorLog(accion, table);
+        }
+        private static string GetErrorLog(string type, string table)
         {
             return type switch
             {

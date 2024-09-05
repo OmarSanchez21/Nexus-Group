@@ -33,9 +33,9 @@ namespace NexusGroup.Data.Repositories.Auth
             {
                 var parameters = new DynamicParameters();
                 parameters.Add("@Username", username);
-                parameters.Add("@Password", dbType: DbType.String ,direction: ParameterDirection.Output);
-                parameters.Add("@FullName", dbType: DbType.String, direction: ParameterDirection.Output);
-                parameters.Add("@AccessLevels", dbType: DbType.String, direction: ParameterDirection.Output);
+                parameters.Add("@Password", dbType: DbType.String, size:355 ,direction: ParameterDirection.Output);
+                parameters.Add("@FullName", dbType: DbType.String,size:150, direction: ParameterDirection.Output);
+                parameters.Add("@AccessLevels", dbType: DbType.String,size:5, direction: ParameterDirection.Output);
                 parameters.Add("@MessageCode", dbType: DbType.Int32, direction: ParameterDirection.Output);
                 await connection.ExecuteAsync("sp_Login", parameters, commandType: CommandType.StoredProcedure);
                 var password = parameters.Get<string>("@Password");

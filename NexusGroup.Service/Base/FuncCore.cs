@@ -1,7 +1,7 @@
 ﻿
 namespace NexusGroup.Service.Base
 {
-    public static class BcryptFunc
+    public static class FuncCore
     {
         public static string HashPassword(string password)
         {
@@ -10,6 +10,10 @@ namespace NexusGroup.Service.Base
         public static bool VerifyPassword(string password, string hashed)
         {
             return BCrypt.Net.BCrypt.Verify(password, hashed);
+        }
+        public static bool isValidEmail(string email)
+        {
+            return email.Contains("@") && email.Contains(".");
         }
     }
 }

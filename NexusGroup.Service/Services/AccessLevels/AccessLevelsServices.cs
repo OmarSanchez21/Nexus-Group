@@ -13,6 +13,7 @@ namespace NexusGroup.Service.Services.AccessLevels
     public class AccessLevelsServices : IAccessLevelsServices
     {
         private readonly IAccessLevelsRepositories _repositories;
+        private const string TablaName = "Acccess Levels";
         public AccessLevelsServices(IAccessLevelsRepositories repositories)
         {
             this._repositories = repositories;
@@ -26,7 +27,7 @@ namespace NexusGroup.Service.Services.AccessLevels
                 if (access == null)
                 {
                     result.Success = false;
-                    result.Message = "No hay ningun registro.";
+                    result.Message = ServiceMessages.NotFoundAll;
                     return result;
                 }
                 else 
@@ -37,24 +38,26 @@ namespace NexusGroup.Service.Services.AccessLevels
                         Name = ace.Name,
                         CreateAt = DateOnly.FromDateTime(ace.CreateAt)
                     }).AsEnumerable();
-                    result.Message = "Se han encontrado.";
+                    result.Message = ServiceMessages.GetAllSuccess;
                     result.Data = dtos;
                 }
             }
             catch (SqlException sqlexception)
             {
-                new LogConfiguration.ExceptionServer("Obteniendo todos los access levels.", sqlexception);
+                string accion = ServiceMessages.LogHelper("all", TablaName);
+                new LogConfiguration.ExceptionSQL(accion, sqlexception);
                 result.Success = false;
-                result.Message = "Ha ocurrido un error con la base de datos.";
+                result.Message = ServiceMessages.DatabaseError;
                 result.Data = sqlexception.Message;
                 return result;
 
             }
             catch (Exception ex)
             {
-                new LogConfiguration.ExceptionServer("Error interno con el servidor", ex);
+                string accion = ServiceMessages.LogHelper("all", TablaName);
+                new LogConfiguration.ExceptionServer(accion, ex);
                 result.Success = false;
-                result.Message = "Ha ocurrido un error interno.";
+                result.Message = ServiceMessages.InternalError;
                 result.Data = ex.Message;
                 return result;
             }
@@ -66,30 +69,32 @@ namespace NexusGroup.Service.Services.AccessLevels
             ServiceResult result = new ServiceResult();
             try
             {
-                var access = await this._repositories.GetValue(id);
+                var access = await _repositories.GetValue(id);
                 if(access == null)
                 {
                     result.Success = false;
-                    result.Message = "No se ha encontrado ningun accesso";
+                    result.Message = ServiceMessages.NotFound;
                     return result;
                 }
-                result.Message = "Se encontro.";
+                result.Message = ServiceMessages.GetValue;
                 result.Data = access;
             }
             catch (SqlException sqlexception)
             {
-                new LogConfiguration.ExceptionServer("Obteniendo todos los access levels.", sqlexception);
+                string accion = ServiceMessages.LogHelper("get", TablaName);
+                new LogConfiguration.ExceptionServer(accion, sqlexception);
                 result.Success = false;
-                result.Message = "Ha ocurrido un error con la base de datos.";
+                result.Message = ServiceMessages.DatabaseError;
                 result.Data = sqlexception.Message;
                 return result;
 
             }
             catch (Exception ex)
             {
-                new LogConfiguration.ExceptionServer("Error interno con el servidor", ex);
+                string accion = ServiceMessages.LogHelper("get", TablaName);
+                new LogConfiguration.ExceptionServer(accion, ex);
                 result.Success = false;
-                result.Message = "Ha ocurrido un error interno.";
+                result.Message = ServiceMessages.InternalError;
                 result.Data = ex.Message;
                 return result;
             }

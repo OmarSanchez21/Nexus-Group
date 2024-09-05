@@ -10,7 +10,11 @@ namespace NexusGroup.Service.Services.Auth
 {
     public class AuthService : IAuthService
     {
-        private readonly IAuthRepositories _repositories;   
+        private readonly IAuthRepositories _repositories;
+        public AuthService(IAuthRepositories authRepositories)
+        {
+            _repositories = authRepositories;
+        }
         public async Task<ServiceResult> Login(string username, string password)
         {
             ServiceResult result = new ServiceResult();

@@ -15,19 +15,6 @@ namespace NexusGroup.Api.Controllers
         {
             _service = authService;
         }
-        // GET: api/<Auth>
-        [HttpGet]
-        public IEnumerable<string> Get()
-        {
-            return new string[] { "value1", "value2" };
-        }
-
-        // GET api/<Auth>/5
-        [HttpGet("{id}")]
-        public string Get(int id)
-        {
-            return "value";
-        }
 
         // POST api/<Auth>
         [HttpPost]
@@ -41,16 +28,5 @@ namespace NexusGroup.Api.Controllers
             return Ok(result);
         }
 
-        // PUT api/<Auth>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
-        {
-        }
-
-        // DELETE api/<Auth>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
-        }
     }
 }

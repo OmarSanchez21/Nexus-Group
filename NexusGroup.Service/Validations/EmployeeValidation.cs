@@ -10,10 +10,6 @@ namespace NexusGroup.Service.Validations
 {
     public static class EmployeeValidation
     {
-        private static bool isValidEmail(string email)
-        {
-            return email.Contains("@") && email.Contains(".");
-        }
         private static ServiceResult Validations(string cedula, string firstname, string lastname, string email, string username, string password, string photo, decimal salary)
         {
             ServiceResult result = new ServiceResult();
@@ -35,7 +31,7 @@ namespace NexusGroup.Service.Validations
             {
                 sb.AppendLine("The email cannot be empty");
             }
-            else if (!isValidEmail(email))
+            else if (!FuncCore.isValidEmail(email))
             {
                 sb.AppendLine("The email format is not valid");
             }

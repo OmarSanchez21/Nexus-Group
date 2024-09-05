@@ -16,6 +16,7 @@ namespace NexusGroup.Service.Services.JobOffers
     public class JobOffersService : IJobOffersService
     {
         private readonly IJobOffersRepositories _repositories;
+        private const string TableName = "Job Offers";
         public JobOffersService(IJobOffersRepositories jobOffersRepositories)
         {
             _repositories = jobOffersRepositories;
@@ -35,26 +36,28 @@ namespace NexusGroup.Service.Services.JobOffers
                 if (rowsAffected <= 0)
                 {
                     result.Success = false;
-                    result.Message = "Failed to add job offer";
+                    result.Message = ServiceMessages.AddFail;
                     return result;
                 }
-                result.Message = "Job offer added successfully";
+                result.Message = ServiceMessages.AddSuccess;
                 result.Data = entity;
             }
             catch (SqlException sqlexception)
             {
-                new LogConfiguration.ExceptionServer("Added a Job Offer.", sqlexception);
+                string accion = ServiceMessages.LogHelper("add", TableName);
+                new LogConfiguration.ExceptionServer(accion, sqlexception);
                 result.Success = false;
-                result.Message = "Error on DataBase.";
+                result.Message = ServiceMessages.DatabaseError;
                 result.Data = sqlexception.Message;
                 return result;
 
             }
             catch (Exception ex)
             {
-                new LogConfiguration.ExceptionServer("Internal Error", ex);
+                string accion = ServiceMessages.LogHelper("add", TableName);
+                new LogConfiguration.ExceptionServer(accion, ex);
                 result.Success = false;
-                result.Message = "Internal Error.";
+                result.Message = ServiceMessages.InternalError;
                 result.Data = ex.Message;
                 return result;
             }
@@ -70,25 +73,27 @@ namespace NexusGroup.Service.Services.JobOffers
                 if(rowsAffected <= 0)
                 {
                     result.Success = false;
-                    result.Message = "Failed deleted job offfer";
+                    result.Message = ServiceMessages.DeleteFail;
                     return result;
                 }
-                result.Message = "Job offer deleted successfully";
+                result.Message = ServiceMessages.DeleteSuccess;
             }
             catch (SqlException sqlexception)
             {
-                new LogConfiguration.ExceptionServer("Added a Job Offer.", sqlexception);
+                string accion = ServiceMessages.LogHelper("delete", TableName);
+                new LogConfiguration.ExceptionServer(accion, sqlexception);
                 result.Success = false;
-                result.Message = "Error on DataBase.";
+                result.Message = ServiceMessages.DatabaseError;
                 result.Data = sqlexception.Message;
                 return result;
 
             }
             catch (Exception ex)
             {
-                new LogConfiguration.ExceptionServer("Internal Error", ex);
+                string accion = ServiceMessages.LogHelper("delete", TableName);
+                new LogConfiguration.ExceptionServer(accion, ex);
                 result.Success = false;
-                result.Message = "Internal Error.";
+                result.Message = ServiceMessages.InternalError;
                 result.Data = ex.Message;
                 return result;
             }
@@ -104,25 +109,27 @@ namespace NexusGroup.Service.Services.JobOffers
                 if (rowsAffected <= 0)
                 {
                     result.Success = false;
-                    result.Message = "Failed deleted job offfer";
+                    result.Message = ServiceMessages.DeleteFail;
                     return result;
                 }
-                result.Message = "Job offer deleted successfully";
+                result.Message = ServiceMessages.DeleteSuccess;
             }
             catch (SqlException sqlexception)
             {
-                new LogConfiguration.ExceptionServer("Added a Job Offer.", sqlexception);
+                string accion = ServiceMessages.LogHelper("perm", TableName);
+                new LogConfiguration.ExceptionServer(accion, sqlexception);
                 result.Success = false;
-                result.Message = "Error on DataBase.";
+                result.Message = ServiceMessages.DatabaseError;
                 result.Data = sqlexception.Message;
                 return result;
 
             }
             catch (Exception ex)
             {
-                new LogConfiguration.ExceptionServer("Internal Error", ex);
+                string accion = ServiceMessages.LogHelper("perm", TableName);
+                new LogConfiguration.ExceptionServer(accion, ex);
                 result.Success = false;
-                result.Message = "Internal Error.";
+                result.Message = ServiceMessages.InternalError;
                 result.Data = ex.Message;
                 return result;
             }
@@ -139,26 +146,27 @@ namespace NexusGroup.Service.Services.JobOffers
                 if (rowsAffected <= 0)
                 {
                     result.Success = false;
-                    result.Message = "Failed to edit job offer";
+                    result.Message = ServiceMessages.EditFail;
                     return result;
                 }
-                result.Message = "Job offer edited successfully";
+                result.Message = ServiceMessages.EditSuccess;
                 result.Data = entity;
             }
             catch (SqlException sqlexception)
             {
-                new LogConfiguration.ExceptionServer("Edit a Job Offer.", sqlexception);
+                string accion = ServiceMessages.LogHelper("edit", TableName);
+                new LogConfiguration.ExceptionServer(accion, sqlexception);
                 result.Success = false;
-                result.Message = "Error on DataBase.";
+                result.Message = ServiceMessages.DatabaseError;
                 result.Data = sqlexception.Message;
                 return result;
-
             }
             catch (Exception ex)
             {
-                new LogConfiguration.ExceptionServer("Internal Error", ex);
+                string accion = ServiceMessages.LogHelper("edit", TableName);
+                new LogConfiguration.ExceptionServer(accion, ex);
                 result.Success = false;
-                result.Message = "Internal Error.";
+                result.Message = ServiceMessages.InternalError;
                 result.Data = ex.Message;
                 return result;
             }
@@ -174,26 +182,28 @@ namespace NexusGroup.Service.Services.JobOffers
                 if(entity == null)
                 {
                     result.Success = false;
-                    result.Message = "The id is not found";
+                    result.Message = ServiceMessages.NotFound;
                     return result;
                 }
-                result.Message = "the job offer is founded";
+                result.Message = ServiceMessages.GetValue;
                 result.Data = entity;
             }
             catch (SqlException sqlexception)
             {
-                new LogConfiguration.ExceptionServer("Edit a Job Offer.", sqlexception);
+                string accion = ServiceMessages.LogHelper("get", TableName);
+                new LogConfiguration.ExceptionServer(accion, sqlexception);
                 result.Success = false;
-                result.Message = "Error on DataBase.";
+                result.Message = ServiceMessages.DatabaseError;
                 result.Data = sqlexception.Message;
                 return result;
 
             }
             catch (Exception ex)
             {
-                new LogConfiguration.ExceptionServer("Internal Error", ex);
+                string accion = ServiceMessages.LogHelper("perm", TableName);
+                new LogConfiguration.ExceptionServer(accion, ex);
                 result.Success = false;
-                result.Message = "Internal Error.";
+                result.Message = ServiceMessages.InternalError;
                 result.Data = ex.Message;
                 return result;
             }
@@ -206,6 +216,12 @@ namespace NexusGroup.Service.Services.JobOffers
             try
             {
                 var entities = await _repositories.GetAll();
+                if(entities == null)
+                {
+                    result.Success = false;
+                    result.Message = ServiceMessages.NotFoundAll;
+                    return result;
+                }
                 var data = entities.Select(job => new JobOffersDTO() 
                 {
                     JobOfferID = job.JobOfferID,
@@ -214,24 +230,26 @@ namespace NexusGroup.Service.Services.JobOffers
                     StartPublication = DateOnly.FromDateTime(job.StartPublication),
                     EndPublication = DateOnly.FromDateTime(job.EndPublication),
                     CreateAt = job.CreateAt
-                }).AsEnumerable();
-                result.Message = "All job offers";
+                });
+                result.Message = ServiceMessages.GetAllSuccess;
                 result.Data = data;
             }
             catch (SqlException sqlexception)
             {
-                new LogConfiguration.ExceptionServer("Edit a Job Offer.", sqlexception);
+                string accion = ServiceMessages.LogHelper("all", TableName);
+                new LogConfiguration.ExceptionServer(accion, sqlexception);
                 result.Success = false;
-                result.Message = "Error on DataBase.";
+                result.Message = ServiceMessages.DatabaseError;
                 result.Data = sqlexception.Message;
                 return result;
 
             }
             catch (Exception ex)
             {
-                new LogConfiguration.ExceptionServer("Internal Error", ex);
+                string accion = ServiceMessages.LogHelper("all", TableName);
+                new LogConfiguration.ExceptionServer(accion, ex);
                 result.Success = false;
-                result.Message = "Internal Error.";
+                result.Message = ServiceMessages.InternalError;
                 result.Data = ex.Message;
                 return result;
             }
@@ -244,6 +262,12 @@ namespace NexusGroup.Service.Services.JobOffers
             try
             {
                 var entities = await _repositories.GetAllDeleted();
+                if(entities == null)
+                {
+                    result.Success = false;
+                    result.Message = ServiceMessages.NotFoundAll;
+                    return result;
+                }
                 var data = entities.Select(job => new M_JobOffers()
                 {
                     JobOfferID = job.JobOfferID,
@@ -252,24 +276,26 @@ namespace NexusGroup.Service.Services.JobOffers
                     EndPublication = job.EndPublication,
                     CreateAt = job.CreateAt,
                     DeleteAt = job.DeleteAt
-                }).AsEnumerable();
+                });
                 result.Message = "All Deleted job offers";
                 result.Data = data;
             }
             catch (SqlException sqlexception)
             {
-                new LogConfiguration.ExceptionServer("Edit a Job Offer.", sqlexception);
+                string accion = ServiceMessages.LogHelper("alld", TableName);
+                new LogConfiguration.ExceptionServer(accion, sqlexception);
                 result.Success = false;
-                result.Message = "Error on DataBase.";
+                result.Message = ServiceMessages.DatabaseError;
                 result.Data = sqlexception.Message;
                 return result;
 
             }
             catch (Exception ex)
             {
-                new LogConfiguration.ExceptionServer("Internal Error", ex);
+                string accion = ServiceMessages.LogHelper("alld", TableName);
+                new LogConfiguration.ExceptionServer(accion, ex);
                 result.Success = false;
-                result.Message = "Internal Error.";
+                result.Message = ServiceMessages.InternalError;
                 result.Data = ex.Message;
                 return result;
             }
@@ -285,25 +311,27 @@ namespace NexusGroup.Service.Services.JobOffers
                 if (rowsAffected <= 0)
                 {
                     result.Success = false;
-                    result.Message = "Failed recover job offfer";
+                    result.Message = ServiceMessages.RecoverFail;
                     return result;
                 }
-                result.Message = "Job offer recover successfully";
+                result.Message = ServiceMessages.RecoverSuccess;
             }
             catch (SqlException sqlexception)
             {
-                new LogConfiguration.ExceptionServer("Added a Job Offer.", sqlexception);
+                string accion = ServiceMessages.LogHelper("recover", TableName);
+                new LogConfiguration.ExceptionServer(accion, sqlexception);
                 result.Success = false;
-                result.Message = "Error on DataBase.";
+                result.Message = ServiceMessages.DatabaseError;
                 result.Data = sqlexception.Message;
                 return result;
 
             }
             catch (Exception ex)
             {
-                new LogConfiguration.ExceptionServer("Internal Error", ex);
+                string accion = ServiceMessages.LogHelper("recover", TableName);
+                new LogConfiguration.ExceptionServer(accion, ex);
                 result.Success = false;
-                result.Message = "Internal Error.";
+                result.Message = ServiceMessages.InternalError;
                 result.Data = ex.Message;
                 return result;
             }

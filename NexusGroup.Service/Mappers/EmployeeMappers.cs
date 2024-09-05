@@ -13,7 +13,7 @@ namespace NexusGroup.Service.Mappers
     {
         public static M_Employees toModelAdd(AddEmployeeDTO dto)
         {
-            string hashed = BcryptFunc.HashPassword(dto.Password);
+            string hashed = FuncCore.HashPassword(dto.Password);
             M_Employees model = new M_Employees()
             {
                 Cedula = dto.Cedula,
@@ -31,7 +31,6 @@ namespace NexusGroup.Service.Mappers
         }
         public static M_Employees toModelEdit(EditEmployeeDTO dto)
         {
-            string hashed = BcryptFunc.HashPassword(dto.Password);
             M_Employees model = new M_Employees()
             {
                 EmployeeID = dto.EmployeeID,
@@ -40,7 +39,6 @@ namespace NexusGroup.Service.Mappers
                 LastName = dto.LastName,
                 Email = dto.Email,
                 Username = dto.Username,
-                Password = hashed,
                 photoURL = dto.photoURL,
                 Salary = dto.Salary,
                 PositionID = dto.PositionID,

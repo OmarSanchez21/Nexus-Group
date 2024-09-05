@@ -15,6 +15,7 @@ namespace NexusGroup.Service.Services.Position
     public class PositionService : IPositionService
     {
         private readonly IPositionRepositories _repositories;
+        private const string TableName = "Position";
         public PositionService(IPositionRepositories positionRepositories)
         {
             this._repositories = positionRepositories;
@@ -37,26 +38,28 @@ namespace NexusGroup.Service.Services.Position
                 if (rowsAffected <= 0) 
                 {
                     result.Success = false;
-                    result.Message = "Failed to add position.";
+                    result.Message = ServiceMessages.AddFail;
                     return result;
                 }
-                result.Message = "Position added successfully";
+                result.Message = ServiceMessages.AddSuccess;
                 result.Data = entity;
             }
             catch (SqlException sqlexception)
             {
-                new LogConfiguration.ExceptionServer("Added a Position.", sqlexception);
+                string accion = ServiceMessages.LogHelper("add", TableName);
+                new LogConfiguration.ExceptionServer(accion, sqlexception);
                 result.Success = false;
-                result.Message = "Error on DataBase.";
+                result.Message = ServiceMessages.DatabaseError;
                 result.Data = sqlexception.Message;
                 return result;
 
             }
             catch (Exception ex)
             {
-                new LogConfiguration.ExceptionServer("Internal Error", ex);
+                string accion = ServiceMessages.LogHelper("add", TableName);
+                new LogConfiguration.ExceptionServer(accion, ex);
                 result.Success = false;
-                result.Message = "Internal Error.";
+                result.Message = ServiceMessages.InternalError;
                 result.Data = ex.Message;
                 return result;
             }
@@ -72,25 +75,27 @@ namespace NexusGroup.Service.Services.Position
                 if(rowsAffected <= 0)
                 {
                     result.Success = false;
-                    result.Message = "Failed to delete the position.";
+                    result.Message = ServiceMessages.DeleteFail;
                     return result;
                 }
-                result.Message = "Position deleted successfully.";
+                result.Message = ServiceMessages.DeleteSuccess;
             }
             catch (SqlException sqlexception)
             {
-                new LogConfiguration.ExceptionServer("Deleted a Position.", sqlexception);
+                string accion = ServiceMessages.LogHelper("delete", TableName);
+                new LogConfiguration.ExceptionServer(accion, sqlexception);
                 result.Success = false;
-                result.Message = "Error on DataBase.";
+                result.Message = ServiceMessages.DatabaseError;
                 result.Data = sqlexception.Message;
                 return result;
 
             }
             catch (Exception ex)
             {
-                new LogConfiguration.ExceptionServer("Internal Error", ex);
+                string accion = ServiceMessages.LogHelper("delete", TableName);
+                new LogConfiguration.ExceptionServer(accion, ex);
                 result.Success = false;
-                result.Message = "Internal Error.";
+                result.Message = ServiceMessages.InternalError;
                 result.Data = ex.Message;
                 return result;
             }
@@ -106,25 +111,27 @@ namespace NexusGroup.Service.Services.Position
                 if (rowsAffected <= 0)
                 {
                     result.Success = false;
-                    result.Message = "Failed to delete permantly the position.";
+                    result.Message = ServiceMessages.DeleteFail;
                     return result;
                 }
-                result.Message = "Position deleted permantly successfully.";
+                result.Message = ServiceMessages.DeleteSuccess;
             }
             catch (SqlException sqlexception)
             {
-                new LogConfiguration.ExceptionServer("Deleted Permently a Position.", sqlexception);
+                string accion = ServiceMessages.LogHelper("perm", TableName);
+                new LogConfiguration.ExceptionServer(accion, sqlexception);
                 result.Success = false;
-                result.Message = "Error on DataBase.";
+                result.Message = ServiceMessages.DatabaseError;
                 result.Data = sqlexception.Message;
                 return result;
 
             }
             catch (Exception ex)
             {
-                new LogConfiguration.ExceptionServer("Internal Error", ex);
+                string accion = ServiceMessages.LogHelper("perm", TableName);
+                new LogConfiguration.ExceptionServer(accion, ex);
                 result.Success = false;
-                result.Message = "Internal Error.";
+                result.Message =  ServiceMessages.InternalError;
                 result.Data = ex.Message;
                 return result;
             }
@@ -150,26 +157,28 @@ namespace NexusGroup.Service.Services.Position
                 if(rowsAffected <= 0)
                 {
                     result.Success = false;
-                    result.Message = "Failed to Edit the Position.";
+                    result.Message = ServiceMessages.EditFail;
                     return result;
                 }
-                result.Message = "Position was edit successfully.";
+                result.Message = ServiceMessages.EditSuccess;
                 result.Data = entity;
             }
             catch (SqlException sqlexception)
             {
-                new LogConfiguration.ExceptionServer("Edit a Position.", sqlexception);
+                string accion = ServiceMessages.LogHelper("edit", TableName);
+                new LogConfiguration.ExceptionServer(accion, sqlexception);
                 result.Success = false;
-                result.Message = "Error on DataBase.";
+                result.Message = ServiceMessages.DatabaseError;
                 result.Data = sqlexception.Message;
                 return result;
 
             }
             catch (Exception ex)
             {
-                new LogConfiguration.ExceptionServer("Internal Error", ex);
+                string accion = ServiceMessages.LogHelper("edit", TableName);
+                new LogConfiguration.ExceptionServer(accion, ex);
                 result.Success = false;
-                result.Message = "Internal Error.";
+                result.Message = ServiceMessages.InternalError;
                 result.Data = ex.Message;
                 return result;
             }
@@ -185,27 +194,28 @@ namespace NexusGroup.Service.Services.Position
                 if (position == null)
                 {
                     result.Success = false;
-                    result.Message = "No item found";
-                    result.Data = $"This id:{id} don't exists.";
+                    result.Message = ServiceMessages.NotFound;
                     return result;
                 }
-                result.Message = "Item Found";
+                result.Message = ServiceMessages.GetValue;
                 result.Data = position;
             }
             catch (SqlException sqlexception)
             {
-                new LogConfiguration.ExceptionServer("Get a Position.", sqlexception);
+                string accion = ServiceMessages.LogHelper("get", TableName);
+                new LogConfiguration.ExceptionServer(accion, sqlexception);
                 result.Success = false;
-                result.Message = "Error on DataBase.";
+                result.Message = ServiceMessages.DatabaseError;
                 result.Data = sqlexception.Message;
                 return result;
 
             }
             catch (Exception ex)
             {
-                new LogConfiguration.ExceptionServer("Internal Error", ex);
+                string accion = ServiceMessages.LogHelper("get", TableName);
+                new LogConfiguration.ExceptionServer(accion, ex);
                 result.Success = false;
-                result.Message = "Internal Error.";
+                result.Message = ServiceMessages.InternalError;
                 result.Data = ex.Message;
                 return result;
             }
@@ -221,26 +231,28 @@ namespace NexusGroup.Service.Services.Position
                 if(positions == null)
                 {
                     result.Success = false;
-                    result.Message = "No items found";
+                    result.Message = ServiceMessages.NotFoundAll;
                     return result;
                 }
-                result.Message = "Items Found";
+                result.Message = ServiceMessages.GetAllSuccess;
                 result.Data = positions;
             }
             catch (SqlException sqlexception)
             {
-                new LogConfiguration.ExceptionServer("GetAll a Position.", sqlexception);
+                string accion = ServiceMessages.LogHelper("all", TableName);
+                new LogConfiguration.ExceptionServer(accion, sqlexception);
                 result.Success = false;
-                result.Message = "Error on DataBase.";
+                result.Message = ServiceMessages.DatabaseError;
                 result.Data = sqlexception.Message;
                 return result;
 
             }
             catch (Exception ex)
             {
-                new LogConfiguration.ExceptionServer("Internal Error", ex);
+                string accion = ServiceMessages.LogHelper("all", TableName);
+                new LogConfiguration.ExceptionServer(accion, ex);
                 result.Success = false;
-                result.Message = "Internal Error.";
+                result.Message = ServiceMessages.InternalError;
                 result.Data = ex.Message;
                 return result;
             }
@@ -256,26 +268,28 @@ namespace NexusGroup.Service.Services.Position
                 if (positions == null)
                 {
                     result.Success = false;
-                    result.Message = "No items found";
+                    result.Message = ServiceMessages.NotFoundAll;
                     return result;
                 }
-                result.Message = "Items Found";
+                result.Message = ServiceMessages.GetAllSuccess;
                 result.Data = positions;
             }
             catch (SqlException sqlexception)
             {
-                new LogConfiguration.ExceptionServer("GetAll Deleted a Position.", sqlexception);
+                string accion = ServiceMessages.LogHelper("alld", TableName);
+                new LogConfiguration.ExceptionServer(accion, sqlexception);
                 result.Success = false;
-                result.Message = "Error on DataBase.";
+                result.Message = ServiceMessages.DatabaseError;
                 result.Data = sqlexception.Message;
                 return result;
 
             }
             catch (Exception ex)
             {
-                new LogConfiguration.ExceptionServer("Internal Error", ex);
+                string accion = ServiceMessages.LogHelper("alld", TableName);
+                new LogConfiguration.ExceptionServer(accion, ex);
                 result.Success = false;
-                result.Message = "Internal Error.";
+                result.Message = ServiceMessages.InternalError;
                 result.Data = ex.Message;
                 return result;
             }
@@ -291,24 +305,26 @@ namespace NexusGroup.Service.Services.Position
                 if(rowsAffected <= 0)
                 {
                     result.Success = false;
-                    result.Message = "Failed to recover position";
+                    result.Message = ServiceMessages.RecoverFail;
                 }
-                result.Message = "Position was recovered successfully.";
+                result.Message = ServiceMessages.RecoverSuccess;
             }
             catch (SqlException sqlexception)
             {
-                new LogConfiguration.ExceptionServer("Recover a Position.", sqlexception);
+                string accion = ServiceMessages.LogHelper("recover", TableName);
+                new LogConfiguration.ExceptionServer(accion, sqlexception);
                 result.Success = false;
-                result.Message = "Error on DataBase.";
+                result.Message = ServiceMessages.DatabaseError;
                 result.Data = sqlexception.Message;
                 return result;
 
             }
             catch (Exception ex)
             {
-                new LogConfiguration.ExceptionServer("Internal Error", ex);
+                string accion = ServiceMessages.LogHelper("recover", TableName);
+                new LogConfiguration.ExceptionServer(accion, ex);
                 result.Success = false;
-                result.Message = "Internal Error.";
+                result.Message = ServiceMessages.InternalError;
                 result.Data = ex.Message;
                 return result;
             }
