@@ -9,6 +9,7 @@ namespace NexusGroup.Service.Services.Auth
 {
     public interface IAuthService
     {
+        Task<ServiceResult> ChangePassword(int id, string password);
         Task<ServiceResult> Login(string username, string password);
     }
 }

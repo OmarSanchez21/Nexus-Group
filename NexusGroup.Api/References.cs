@@ -7,6 +7,7 @@ using NexusGroup.Data.Repositories.Employees;
 using NexusGroup.Data.Repositories.EmployeesPermission;
 using NexusGroup.Data.Repositories.JobOffers;
 using NexusGroup.Data.Repositories.Position;
+using NexusGroup.Service.Base;
 using NexusGroup.Service.Services.AccessLevels;
 using NexusGroup.Service.Services.Auth;
 using NexusGroup.Service.Services.Candidates;
@@ -48,6 +49,8 @@ namespace NexusGroup.Api
         {
             services.AddScoped<IAuthService, AuthService>();
             services.AddTransient<IAuthRepositories, AuthRepositories>();
+
+            services.AddScoped<IJwtTokenHelper, JwtTokenHelper>();
         }
         public static void AddEmployeeService(IServiceCollection services)
         {

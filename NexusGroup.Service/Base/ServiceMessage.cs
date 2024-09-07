@@ -25,6 +25,12 @@ namespace NexusGroup.Service.Base
         public const string NotFoundAll = "The List is empty";
         public const string DatabaseError = "Error in the database.";
         public const string InternalError = "Internal server error.";
+
+        //Login
+        public const string LoginSuccess = "Login success";
+        public const string LoginFail = "Login failed, username or password incorrect";
+        public const string PasswordSuccess = "Change Password successfully";
+        public const string PasswordFail = "Failed to change password";
         public static string LogHelper(string accion, string table)
         {
             return GetErrorLog(accion, table);

@@ -17,10 +17,20 @@ namespace NexusGroup.Api.Controllers
         }
 
         // POST api/<Auth>
-        [HttpPost]
-        public async Task<IActionResult> Post([FromBody] AuthDTO dto)
+        [HttpPost("login")]
+        public async Task<IActionResult> Login([FromBody] AuthDTO dto)
         {
             var result = await _service.Login(dto.Username, dto.Password);
+            if (!result.Success)
+            {
+                return NotFound(result);
+            }
+            return Ok(result);
+        }
+        [HttpPost("change-password")]
+        public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordDTO dto)
+        {
+            var result = await _service.ChangePassword(dto.Id, dto.newPassword);
             if (!result.Success)
             {
                 return NotFound(result);
