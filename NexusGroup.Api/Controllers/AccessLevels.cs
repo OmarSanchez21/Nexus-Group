@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using NexusGroup.Service.Services.AccessLevels;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -16,6 +17,7 @@ namespace NexusGroup.Api.Controllers
         }
         // GET: api/<AccessLevels>
         [HttpGet]
+        [Authorize]
         public async Task<IActionResult> GetAll()
         {
             var result = await _service.GetAll();
@@ -26,6 +28,7 @@ namespace NexusGroup.Api.Controllers
             return Ok(result);
         }
         [HttpGet("value/{id}")]
+        [Authorize]
         public async Task<IActionResult> Get(string id)
         {
             var result = await _service.GetValue(id);

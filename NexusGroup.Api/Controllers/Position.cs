@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using NexusGroup.Service.DTOs;
 using NexusGroup.Service.Services.Position;
 
@@ -38,6 +39,7 @@ namespace NexusGroup.Api.Controllers
         }
         // GET api/<Position>/5
         [HttpGet("value/{id}")]
+        [Authorize]
         public async Task<IActionResult> Get(int id)
         {
             var result = await _service.Get(id);
@@ -50,6 +52,7 @@ namespace NexusGroup.Api.Controllers
 
         // POST api/<Position>
         [HttpPost("add")]
+        [Authorize]
         public async Task<IActionResult> Post([FromBody] AddPositionDTO dto)
         {
             var result = await _service.Add(dto);
@@ -62,6 +65,7 @@ namespace NexusGroup.Api.Controllers
 
         // PUT api/<Position>/5
         [HttpPut("edit")]
+        [Authorize]
         public async Task<IActionResult> Put([FromBody] EditPositionDTO dto)
         {
             var result = await _service.Edit(dto);
@@ -72,6 +76,7 @@ namespace NexusGroup.Api.Controllers
             return Ok(result);
         }
         [HttpPut("remove/{id}")]
+        [Authorize]
         public async Task<IActionResult> Remove(int id)
         {
             var result = await _service.Delete(id);
@@ -82,6 +87,7 @@ namespace NexusGroup.Api.Controllers
             return Ok(result);
         }
         [HttpPut("recover/{id}")]
+        [Authorize]
         public async Task<IActionResult> Recover(int id)
         {
             var result = await _service.Recover(id);

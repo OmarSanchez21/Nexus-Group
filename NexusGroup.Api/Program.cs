@@ -68,13 +68,16 @@ builder.Services.AddAuthentication(options =>
 
 References.AddDapperConnection(builder.Services, builder.Configuration);
 References.AddAccessLevelsServices(builder.Services);
-References.AddPositionService(builder.Services);
-References.AddJobOffersService(builder.Services);
 References.AddCandidatesService(builder.Services);
-References.AddAuthService(builder.Services);
-References.AddEmployeeService(builder.Services);
-References.AddEmployeePermissionService(builder.Services);
 References.AddDepartmentService(builder.Services);
+References.AddEmployeePermissionService(builder.Services);
+References.AddEmployeeService(builder.Services);
+References.AddJobOffersService(builder.Services);
+References.AddOverTimeService(builder.Services);
+References.AddPayRollService(builder.Services);
+References.AddPerformanceReviewService(builder.Services);
+References.AddPositionService(builder.Services);
+References.AddTrainingService(builder.Services);
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NexusGroup.Service.DTOs;
-using NexusGroup.Service.Services.Employees;
+using NexusGroup.Service.Services.Training;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -9,14 +9,14 @@ namespace NexusGroup.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class Employee : ControllerBase
+    public class Training : ControllerBase
     {
-        private readonly IEmployeesService _service;
-        public Employee(IEmployeesService employeesService)
+        private readonly ITrainingService _service;
+        public Training(ITrainingService trainingService)
         {
-            _service = employeesService;
+            _service = trainingService;
         }
-        // GET: api/<Position>
+        // GET: api/<Training>
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
@@ -53,7 +53,7 @@ namespace NexusGroup.Api.Controllers
         // POST api/<Position>
         [HttpPost("add")]
         [Authorize]
-        public async Task<IActionResult> Post([FromBody] AddEmployeeDTO dto)
+        public async Task<IActionResult> Post([FromBody] AddTrainingDTO dto)
         {
             var result = await _service.Add(dto);
             if (!result.Success)
@@ -66,7 +66,7 @@ namespace NexusGroup.Api.Controllers
         // PUT api/<Position>/5
         [HttpPut("edit")]
         [Authorize]
-        public async Task<IActionResult> Put([FromBody] EditEmployeeDTO dto)
+        public async Task<IActionResult> Put([FromBody] EditTrainingDTO dto)
         {
             var result = await _service.Edit(dto);
             if (!result.Success)
