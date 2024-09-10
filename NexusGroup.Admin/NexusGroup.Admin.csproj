@@ -12,9 +12,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Data\ApiResponse\" />
-    <Folder Include="Data\Models\" />
-    <Folder Include="Data\DTO\" />
     <Folder Include="Data\Token\" />
   </ItemGroup>
 

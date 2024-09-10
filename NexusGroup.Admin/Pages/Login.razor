@@ -1,0 +1,102 @@
+﻿@page "/login"
+@layout LoginLayout
+@using MudBlazor
+@using Data.Request
+@using Data.ApiServices
+@inject ILoginService _service
+@inject ISnackbar _snackbar
+@inject IDialogService DialogService
+
+<MudContainer MaxWidth="MaxWidth.Medium" Class="d-flex justify-center align-center vh-100">
+    <MudCard>
+        <MudCardContent>
+            <MudText Typo="Typo.h5" Align="Align.Center" Class="mb-3">Iniciar Sesión</MudText>
+
+            <MudForm @ref="form" Validated="true">
+                <MudTextField Label="Correo Electrónico"
+                              Variant="Variant.Filled"
+                              FullWidth
+                              Margin="Margin.Dense"
+                              @bind-Value="loginModel.Username"
+                              Required />
+
+                <MudTextField Label="Contraseña"
+                              Variant="Variant.Filled"
+                              FullWidth
+                              Margin="Margin.Dense"
+                              Type="password"
+                              @bind-Value="loginModel.Password"
+                              Required />
+
+                <MudButton Variant="Variant.Filled"
+                           Color="Color.Primary"
+                           FullWidth
+                           Class="mt-3"
+                           Disabled="@isLoading"
+                           OnClick="HandleLogin">
+                    @if (isLoading)
+                    {
+                        <MudProgressCircular Size="20px" Class="me-2" />
+                        Iniciando...
+                    }
+                    else
+                    {
+                        Entrar
+                    }
+                </MudButton>
+            </MudForm>
+        </MudCardContent>
+    </MudCard>
+</MudContainer>
+
+@code {
+    private LoginRequest loginModel = new LoginRequest();
+    private MudForm form;
+    private bool isLoading = false;
+
+    private async Task HandleLogin()
+    {
+        if (form.IsValid)
+        {
+            isLoading = true;
+
+            try
+            {
+                var response = await _service.Login(loginModel);
+                isLoading = false;
+
+                if (response.Success)
+                {
+                    ShowDialog("Inicio de Sesión", "Has iniciado sesión exitosamente.", Severity.Success);
+                }
+                else
+                {
+                    ShowDialog("Error", "Error en el inicio de sesión: " + response.Message, Severity.Error);
+                }
+            }
+            catch (Exception ex)
+            {
+                isLoading = false;
+                ShowDialog("Error", "Error inesperado: " + ex.Message, Severity.Error);
+            }
+        }
+        else
+        {
+            _snackbar.Add("Por favor, completa todos los campos requeridos.", Severity.Warning);
+        }
+    }
+
+    private void ShowDialog(string title, string message, Severity severity)
+    {
+        var parameters = new DialogParameters
+        {
+            { "Title", title },
+            { "Message", message },
+            { "Severity", severity }
+        };
+
+        var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Small };
+
+        DialogService.Show<DialogContent>(title, parameters, options);
+    }
+}

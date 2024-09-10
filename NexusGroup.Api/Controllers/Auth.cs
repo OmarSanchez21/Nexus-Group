@@ -23,7 +23,7 @@ namespace NexusGroup.Api.Controllers
             var result = await _service.Login(dto.Username, dto.Password);
             if (!result.Success)
             {
-                return NotFound(result);
+                return BadRequest(result);
             }
             return Ok(result);
         }
@@ -33,7 +33,7 @@ namespace NexusGroup.Api.Controllers
             var result = await _service.ChangePassword(dto.Id, dto.newPassword);
             if (!result.Success)
             {
-                return NotFound(result);
+                return BadRequest(result);
             }
             return Ok(result);
         }

@@ -65,7 +65,7 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
-
+References.AddAuthService(builder.Services);
 References.AddDapperConnection(builder.Services, builder.Configuration);
 References.AddAccessLevelsServices(builder.Services);
 References.AddCandidatesService(builder.Services);

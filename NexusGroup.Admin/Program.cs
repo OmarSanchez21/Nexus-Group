@@ -1,13 +1,19 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using NexusGroup.Admin.Data;
-
+using NexusGroup.Admin.Data.ApiServices;
+using MudBlazor.Services;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Services.AddHttpClient();
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
+builder.Services.AddScoped<ILoginService, LoginService>();
 builder.Services.AddSingleton<WeatherForecastService>();
+
+builder.Services.AddMudServices();
+
 
 var app = builder.Build();
 

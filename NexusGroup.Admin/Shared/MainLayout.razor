@@ -1,7 +1,15 @@
 ﻿@inherits LayoutComponentBase
 
 <PageTitle>NexusGroup.Admin</PageTitle>
+@* Required *@
+<MudThemeProvider />
+<MudPopoverProvider />
 
+@* Needed for dialogs *@
+<MudDialogProvider />
+
+@* Needed for snackbars *@
+<MudSnackbarProvider />
 <div class="page">
     <div class="sidebar">
         <NavMenu />
