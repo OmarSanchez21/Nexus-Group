@@ -1,0 +1,58 @@
+﻿@inject MudBlazor.IDialogService DialogService
+@using Data.Request
+@inject ISnackbar _snackbar
+@using Data.Models
+@using MudBlazor
+@inject Data.ApiServices.IEmpleadoService _service
+@inject Data.ApiServices.IPositionService _serviceP
+<MudDialog>
+    <DialogContent>
+        <MudForm @ref="form" Model="addEmpleadoRequest">
+            <MudText Typo="Typo.h5">Add Employee</MudText>
+            <MudTextField Label="Cedula" @bind-Value="@addEmpleadoRequest.Cedula" />
+            <MudTextField Label="First Name" @bind-Value="@addEmpleadoRequest.FirstName" />
+            <MudTextField Label="Last Name" @bind-Value="@addEmpleadoRequest.LastName" />
+            <MudTextField Label="Email" @bind-Value="@addEmpleadoRequest.Email" />
+            <MudTextField Label="Username" @bind-Value="@addEmpleadoRequest.Username" />
+            <MudTextField Label="Password" @bind-Value="@addEmpleadoRequest.Password" InputType="InputType.Password" />
+            <MudTextField Label="Salary" @bind-Value="@addEmpleadoRequest.Salary" />
+            <MudSelect Label="Position" @bind-Value="@addEmpleadoRequest.PositionID">
+                @foreach(var pos in position)
+                {
+                    <MudSelectItem Value="@pos.PositionID">@pos.Title</MudSelectItem>
+                    <MudSelectItem Value="@pos.PositionID">@pos.Title </MudSelectItem>
+                }
+            </MudSelect>
+            <MudTextField Label="Access Levels" @bind-Value="@addEmpleadoRequest.AccessLevelsID" />
+
+            <MudButton OnClick="Submit" Color="Color.Primary" Variant="Variant.Filled">Add Employee</MudButton>
+        </MudForm>
+    </DialogContent>
+</MudDialog>
+
+@code {
+    private MudForm form;
+    private AddEmpleadoRequest addEmpleadoRequest = new AddEmpleadoRequest();
+    private IEnumerable<PositionModels> position = Enumerable.Empty<PositionModels>();
+
+    private async Task LoadPosition()
+    {
+        var response = await _serviceP.GetAll();
+        if(response.Success && response.Data != null)
+        {
+            position = response.Data;
+        }
+    }
+    private async Task Submit()
+    {
+        if (form.IsValid)
+        {
+            var response = await _service.Add(addEmpleadoRequest);
+            if (response.Success)
+            {
+
+                _snackbar.Add(response.Message, Severity.Success, c => c.SnackbarVariant = Variant.Outlined);
+            }
+        }
+    }
+}

@@ -3,15 +3,20 @@ using Microsoft.AspNetCore.Components.Web;
 using NexusGroup.Admin.Data;
 using NexusGroup.Admin.Data.ApiServices;
 using MudBlazor.Services;
+using NexusGroup.Admin.Data.Token;
+using Blazored.SessionStorage;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Services.AddBlazoredSessionStorage();
 builder.Services.AddHttpClient();
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddScoped<ILoginService, LoginService>();
 builder.Services.AddSingleton<WeatherForecastService>();
-
+builder.Services.AddScoped<TokenHelper>();
+builder.Services.AddScoped<IPositionService, PositionService>();
+builder.Services.AddScoped<IEmpleadoService, EmpleadoService>();
 builder.Services.AddMudServices();
 
 

@@ -6,7 +6,7 @@ namespace NexusGroup.Admin.Data.ApiServices
 {
     public interface ILoginService
     {
-        Task<BaseResponse> Login(LoginRequest request);
+        Task<ApiResponse<string>> Login(LoginRequest request);
     }
     public class LoginService : ILoginService
     {
@@ -19,23 +19,24 @@ namespace NexusGroup.Admin.Data.ApiServices
             _configuration = configuration;
             baseUrl = this._configuration["ApiSettings:BaseUrl"];
         }
-        public async Task<BaseResponse> Login(LoginRequest request)
+
+        public async Task<ApiResponse<string>> Login(LoginRequest request)
         {
-            BaseResponse result = new BaseResponse();
+            ApiResponse<string> result = new ApiResponse<string>();
             try
             {
                 var httpClient = _httpClientFactory.CreateClient();
                 httpClient.BaseAddress = new Uri(baseUrl);
                 var httpResponse = await httpClient.PostAsJsonAsync<LoginRequest>("Auth/login", request);
-                if(httpResponse.StatusCode == HttpStatusCode.InternalServerError)
+                if (httpResponse.StatusCode == HttpStatusCode.InternalServerError)
                 {
                     result.Success = false;
                     result.Message = "Error interno";
                 }
                 else
                 {
-                    var content = await httpResponse.Content.ReadFromJsonAsync<BaseResponse>();
-                    if(content != null)
+                    var content = await httpResponse.Content.ReadFromJsonAsync<ApiResponse<string>>();
+                    if (content != null)
                     {
                         result = content;
                     }

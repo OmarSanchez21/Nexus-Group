@@ -1,0 +1,19 @@
+﻿@using MudBlazor
+
+<MudDialog>
+    <DialogContent>
+        <MudText>Debe iniciar Sesion de nuevo.</MudText>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Logout" Color="Color.Primary">OK</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
+    
+    private void Logout()
+    {
+        MudDialog.Close();
+    }
+}

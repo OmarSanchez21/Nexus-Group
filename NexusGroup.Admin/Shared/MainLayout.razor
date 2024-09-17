@@ -1,27 +1,148 @@
 ﻿@inherits LayoutComponentBase
-
+@inject Data.Token.TokenHelper _token
+@inject NavigationManager NavigationManager
+@using Components
+@inject IDialogService DialogService
 <PageTitle>NexusGroup.Admin</PageTitle>
-@* Required *@
+
 <MudThemeProvider />
 <MudPopoverProvider />
-
-@* Needed for dialogs *@
 <MudDialogProvider />
-
-@* Needed for snackbars *@
 <MudSnackbarProvider />
-<div class="page">
-    <div class="sidebar">
-        <NavMenu />
-    </div>
 
-    <main>
-        <div class="top-row px-4">
-            <a href="https://docs.microsoft.com/aspnet/" target="_blank">About</a>
-        </div>
+<CascadingValue Value="TokenPart">
+    <MudLayout>
+        <MudAppBar Elevation="1">
+            <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
+            <MudText Typo="Typo.h5" Class="ml-3">NexusGroup.Admin</MudText>
+            <MudSpacer />
+            <MudMenu Icon="@Icons.Material.Filled.MoreVert" Color="Color.Inherit" @bind-Open="_menuOpen">
+                <MudMenuItem>
+                    <MudMenuItem OnClick="ShowProfile">Mi Perfil</MudMenuItem>
+                    <MudMenuItem OnClick="Logout">Cerrar Sesión</MudMenuItem>
+                </MudMenuItem>
+            </MudMenu>
+        </MudAppBar>
+        <MudDrawer @bind-Open="_drawerOpen" ClipMode="DrawerClipMode.Always" Elevation="2">
+            <MudNavMenu>
+                <MudNavLink Href="/" Match="NavLinkMatch.All">Inicio</MudNavLink>
+                <MudNavLink Href=@GetEmployeeUrl()>Empleados</MudNavLink>
+                <MudNavLink Href="candidates">Candidatos</MudNavLink>
+                <MudNavLink Href="job-offers">Ofertas de Trabajo</MudNavLink>
+                <MudNavLink Href="permissions">Permisos</MudNavLink>
+                <MudNavLink Href="books">Libros</MudNavLink>
+                <MudNavLink Href="authors">Autores</MudNavLink>
+                <MudNavLink Href="publishers">Editoriales</MudNavLink>
+                <MudNavLink Href="categories">Categorías</MudNavLink>
+            </MudNavMenu>
+        </MudDrawer>
+        <MudMainContent>
+            @if (_isLoading)
+            {
+                <MudProgressCircular />
+            }
+            else
+            {
+                @if (!string.IsNullOrEmpty(TokenPart))
+                {
+                        @Body
+                }
+                else
+                {
+                    <MudText>No se encontró el token.</MudText>
+                }
+            }
+        </MudMainContent>
+    </MudLayout>
+</CascadingValue>
 
-        <article class="content px-4">
-            @Body
-        </article>
-    </main>
-</div>
+@code {
+    [CascadingParameter]
+    public string TokenPart { get; set; }
+    bool _drawerOpen = true;
+    bool _menuOpen = false;
+    bool _isLoading = true;
+    private Timer _tokenCheckTimer;
+    void DrawerToggle()
+    {
+        _drawerOpen = !_drawerOpen;
+    }
+    void ToggleMenu()
+    {
+        _menuOpen = !_menuOpen;
+    }
+
+    void ShowProfile()
+    {
+        // Lógica para mostrar el menú del usuario (opcional)
+    }
+
+    async Task Logout()
+    {
+        await _token.SaveToken(null);
+        NavigationManager.NavigateTo("/login");
+    }
+    protected override async Task OnInitializedAsync()
+    {
+        _tokenCheckTimer = new Timer(async _ => await CheckTokenExpiration(), null, TimeSpan.Zero, TimeSpan.FromMinutes(5));
+        await Task.CompletedTask;
+    }
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            string token = await _token.GetToken();
+            if (string.IsNullOrEmpty(token) || await _token.IsTokenExpiredAsync())
+            {
+                await ShowDialogOut();
+                NavigationManager.NavigateTo("/login");
+            }
+            else
+            {
+                TokenPart = await _token.ExtractToken();
+            }
+
+            _isLoading = false;
+            StateHasChanged();
+        }
+    }
+    private async Task CheckTokenExpiration()
+    {
+        if (await _token.IsTokenExpiredAsync())
+        {
+            await InvokeAsync(async () =>
+            {
+                await ShowDialogOut();
+                StateHasChanged();
+
+            });
+        }
+        else
+        {
+            await InvokeAsync(async () =>
+            {
+                StateHasChanged();
+            });
+        }
+    }
+    private Task ShowDialogOut()
+    {
+        var parameters = new DialogParameters();
+        var options = new DialogOptions{
+                CloseOnEscapeKey = true, CloseButton = true, Position = DialogPosition.TopCenter, MaxWidth = MaxWidth.Small, FullWidth = true
+         };
+        var dialog = DialogService.Show<DialogOut>("Se acabo el tiempo", parameters, options);
+
+        return dialog.Result.ContinueWith(async task =>
+        {
+            if (!task.Result.Canceled)
+            {
+                await Logout();
+            }    
+        });
+    }
+    private string GetEmployeeUrl()
+    {
+        return $"/{TokenPart}/home/empleado";
+    }
+}

@@ -1,5 +1,7 @@
 ﻿@inherits LayoutComponentBase
 @using MudBlazor
+@* Required *@
+<MudThemeProvider />
 <MudPopoverProvider />
 
 @* Needed for dialogs *@
@@ -7,6 +9,7 @@
 
 @* Needed for snackbars *@
 <MudSnackbarProvider />
+<MudThemeProvider />
 <MudLayout>
     <MudContainer MaxWidth="MaxWidth.Medium" Class="d-flex justify-center align-center vh-100">
         @Body

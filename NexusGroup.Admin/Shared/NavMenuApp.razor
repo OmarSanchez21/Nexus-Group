@@ -1,0 +1,27 @@
+﻿@using MudBlazor
+@inject Data.Token.TokenHelper TokenHelper
+<MudNavMenu>
+    <MudNavLink Href="/" Match="NavLinkMatch.All">Inicio</MudNavLink>
+    <MudNavLink Href=@GetEmployeeUrl()>Empleados</MudNavLink>
+    <MudNavLink Href="candidates">Candidatos</MudNavLink>
+    <MudNavLink Href="job-offers">Ofertas de Trabajo</MudNavLink>
+    <MudNavLink Href="permissions">Permisos</MudNavLink>
+    <MudNavLink Href="books">Libros</MudNavLink>
+    <MudNavLink Href="authors">Autores</MudNavLink>
+    <MudNavLink Href="publishers">Editoriales</MudNavLink>
+    <MudNavLink Href="categories">Categorías</MudNavLink>
+</MudNavMenu>
+
+@code {
+    private string TokenPart = string.Empty;
+
+    protected override async Task OnInitializedAsync()
+    {
+        TokenPart = await TokenHelper.ExtractToken();
+    }
+
+    private string GetEmployeeUrl()
+    {
+        return $"/{TokenPart}/home/empleado";
+    }
+}

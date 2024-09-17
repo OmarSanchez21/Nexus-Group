@@ -1,11 +1,14 @@
 ﻿@page "/login"
 @layout LoginLayout
 @using MudBlazor
+@inject Data.Token.TokenHelper _token
+@inject NavigationManager NavigationManager
 @using Data.Request
 @using Data.ApiServices
 @inject ILoginService _service
 @inject ISnackbar _snackbar
 @inject IDialogService DialogService
+@using Components
 
 <MudContainer MaxWidth="MaxWidth.Medium" Class="d-flex justify-center align-center vh-100">
     <MudCard>
@@ -24,7 +27,7 @@
                               Variant="Variant.Filled"
                               FullWidth
                               Margin="Margin.Dense"
-                              Type="password"
+                              InputType="InputType.Password"
                               @bind-Value="loginModel.Password"
                               Required />
 
@@ -34,15 +37,17 @@
                            Class="mt-3"
                            Disabled="@isLoading"
                            OnClick="HandleLogin">
-                    @if (isLoading)
-                    {
-                        <MudProgressCircular Size="20px" Class="me-2" />
-                        Iniciando...
-                    }
-                    else
-                    {
-                        Entrar
-                    }
+                    <div style="display: flex; align-items: center; justify-content: center;">
+                        @if (isLoading)
+                        {
+                            <MudProgressCircular Color="Color.Default" Size="Size.Small" Indeterminate="true" />
+                            <span>Iniciando...</span>
+                        }
+                        else
+                        {
+                            <span>Entrar</span>
+                        }
+                    </div>
                 </MudButton>
             </MudForm>
         </MudCardContent>
@@ -53,31 +58,38 @@
     private LoginRequest loginModel = new LoginRequest();
     private MudForm form;
     private bool isLoading = false;
+    private bool validateForm = true;
 
     private async Task HandleLogin()
     {
-        if (form.IsValid)
+        bool isUserValid = string.IsNullOrEmpty(loginModel.Username);
+        if (!isUserValid)
         {
             isLoading = true;
 
             try
             {
                 var response = await _service.Login(loginModel);
-                isLoading = false;
 
-                if (response.Success)
+                if (response.Success && response != null)
                 {
-                    ShowDialog("Inicio de Sesión", "Has iniciado sesión exitosamente.", Severity.Success);
+                    string token = response.Data;
+                    await _token.SaveToken(token);
+                    var tokenpart = await _token.ExtractToken();
+                    await ShowDialog(response.Message, Severity.Success, response.Success, tokenpart);
                 }
                 else
                 {
-                    ShowDialog("Error", "Error en el inicio de sesión: " + response.Message, Severity.Error);
+                    await ShowDialog(response.Message, Severity.Error, response.Success, null);
                 }
             }
             catch (Exception ex)
             {
+                await ShowDialog("Error inesperado: " + ex.Message, Severity.Error, false, null);
+            }
+            finally
+            {
                 isLoading = false;
-                ShowDialog("Error", "Error inesperado: " + ex.Message, Severity.Error);
             }
         }
         else
@@ -86,17 +98,27 @@
         }
     }
 
-    private void ShowDialog(string title, string message, Severity severity)
+    private async Task ShowDialog(string message, Severity severity, bool success, string tokenpart )
     {
-        var parameters = new DialogParameters
+        var parameters = new DialogParameters<DialogLogin>
         {
-            { "Title", title },
-            { "Message", message },
-            { "Severity", severity }
+            { x => x.Message, message },
+            { x => x.Severity, severity },
+            { x => x.Success, success }
         };
 
-        var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Small };
-
-        DialogService.Show<DialogContent>(title, parameters, options);
+        var options = new DialogOptions
+            {
+                CloseButton = true,
+                MaxWidth = MaxWidth.Small,
+                Position = DialogPosition.Center,
+                FullWidth = true
+            };
+        var dialog = DialogService.Show<DialogLogin>("Iniciar Sesión", parameters, options);
+        var result = await dialog.Result;
+        if(result.Data is bool && success)
+        {
+            NavigationManager.NavigateTo($"{tokenpart}/home");
+        }
     }
 }

@@ -1,0 +1,17 @@
+﻿@page "/{tokenpart}/home/empleado"
+@using Components.Empleados
+@inject MudBlazor.IDialogService _dialog
+@inject Data.Token.TokenHelper _token
+<h3>Empleado</h3>
+<MudButton Color="Color.Primary" Variant="Variant.Outlined" StartIcon="@Icons.Material.Filled.Add" IconColor="Color.Secondary" OnClick="OpenAddEmployee"> Open Dialog</MudButton>
+@code {
+    [Parameter]
+    public string TokenPart { get; set; }
+
+    private async Task OpenAddEmployee()
+    {
+        var parameters = new DialogParameters();
+        var options = new DialogOptions { CloseButton = true, CloseOnEscapeKey = true };
+        await _dialog.ShowAsync<AddEmployeeDialog>("Add Employee", parameters, options);
+    }
+}
