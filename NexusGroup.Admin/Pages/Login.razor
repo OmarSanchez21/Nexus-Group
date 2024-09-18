@@ -1,14 +1,10 @@
 ﻿@page "/login"
 @layout LoginLayout
-@using MudBlazor
 @inject Data.Token.TokenHelper _token
 @inject NavigationManager NavigationManager
-@using Data.Request
-@using Data.ApiServices
-@inject ILoginService _service
+@inject Data.ApiServices.Auth.IAuthApiService _service
 @inject ISnackbar _snackbar
 @inject IDialogService DialogService
-@using Components
 
 <MudContainer MaxWidth="MaxWidth.Medium" Class="d-flex justify-center align-center vh-100">
     <MudCard>
@@ -55,7 +51,7 @@
 </MudContainer>
 
 @code {
-    private LoginRequest loginModel = new LoginRequest();
+    private AuthRequest.LoginRequest loginModel = new AuthRequest.LoginRequest();
     private MudForm form;
     private bool isLoading = false;
     private bool validateForm = true;
