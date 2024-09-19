@@ -1,0 +1,104 @@
+﻿@using System.Net.Http.Json
+@using System.Threading
+@inject Data.ApiServices.Employees.IEmployeesApiService _serviceE
+<MudDataGrid @ref="dataGrid" T="EmployeeResponse" ServerData="ServerReload" Filterable="false">
+    <ToolBarContent>
+        <MudText Typo="Typo.h6">Periodic Elements</MudText>
+        <MudSpacer />
+        <MudTextField T="string" ValueChanged="@(s=>OnSearch(s))" Placeholder="Search" Adornment="Adornment.Start"
+                      AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+    </ToolBarContent>
+    <Columns>
+        <PropertyColumn Property="x => x.EmployeeID" Title="#" />
+        <PropertyColumn Property="x => x.Cedula" />
+        <PropertyColumn Property="x => x.FirstName" />
+        <PropertyColumn Property="x => x.LastName" />
+        <PropertyColumn Property="x => x.Email" Title="Molar mass" />
+        <PropertyColumn Property="x => x.Username" Title="Category" />
+    </Columns>
+    <PagerContent>
+        <MudDataGridPager T="EmployeeResponse" />
+    </PagerContent>
+</MudDataGrid>
+@code {
+    MudDataGrid<EmployeeResponse> dataGrid;
+    string searchString = null;
+
+    /// <summary>
+    /// Here we simulate getting the paged, filtered and ordered data from the server
+    /// </summary>
+    private async Task<GridData<EmployeeResponse>> ServerReload(GridState<EmployeeResponse> state)
+    {
+        var response = await _serviceE.GetAll();
+        IEnumerable<EmployeeResponse> data = response.Data;
+        await Task.Delay(300);
+        data = data.Where(employee =>
+        {
+            if (string.IsNullOrWhiteSpace(searchString))
+                return true;
+            if (employee.Cedula.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+                return true;
+            if (employee.FirstName.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+                return true;
+            if (employee.LastName.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+                return true;
+            if (employee.Email.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+                return true;
+            if (employee.Username.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+                return true;
+            return false;
+        }).ToArray();
+        var totalItems = data.Count();
+
+        var sortDefinition = state.SortDefinitions.FirstOrDefault();
+        if (sortDefinition != null)
+        {
+            switch (sortDefinition.SortBy)
+            {
+                case nameof(EmployeeResponse.Cedula):
+                    data = data.OrderByDirection(
+                        sortDefinition.Descending ? SortDirection.Descending : SortDirection.Ascending,
+                        o => o.Cedula
+                    );
+                    break;
+                case nameof(EmployeeResponse.FirstName):
+                    data = data.OrderByDirection(
+                        sortDefinition.Descending ? SortDirection.Descending : SortDirection.Ascending,
+                        o => o.FirstName
+                    );
+                    break;
+                case nameof(EmployeeResponse.LastName):
+                    data = data.OrderByDirection(
+                        sortDefinition.Descending ? SortDirection.Descending : SortDirection.Ascending,
+                        o => o.LastName
+                    );
+                    break;
+                case nameof(EmployeeResponse.Email):
+                    data = data.OrderByDirection(
+                        sortDefinition.Descending ? SortDirection.Descending : SortDirection.Ascending,
+                        o => o.Email
+                    );
+                    break;
+                case nameof(EmployeeResponse.Username):
+                    data = data.OrderByDirection(
+                        sortDefinition.Descending ? SortDirection.Descending : SortDirection.Ascending,
+                        o => o.Username
+                    );
+                    break;
+            }
+        }
+
+        var pagedData = data.Skip(state.Page * state.PageSize).Take(state.PageSize).ToArray();
+        return new GridData<EmployeeResponse>
+            {
+                TotalItems = totalItems,
+                Items = pagedData
+            };
+    }
+
+    private Task OnSearch(string text)
+    {
+        searchString = text;
+        return dataGrid.ReloadServerData();
+    }
+}

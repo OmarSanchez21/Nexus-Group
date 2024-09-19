@@ -1,28 +1,57 @@
 ﻿@inject MudBlazor.IDialogService DialogService
 @inject ISnackbar _snackbar
 @inject Data.ApiServices.Position.IPositionApiService _serviceP
-
-<MudDialog>
+@inject Data.ApiServices.AccessLevels.IAccessLevelsApiService _serviceA
+<MudDialog MaxWidth="MaxWidth.Small">
     <DialogContent>
         <MudForm @ref="form" Model="addEmpleadoRequest">
-            <MudText Typo="Typo.h5">Add Employee</MudText>
-            <MudTextField Label="Cedula" @bind-Value="@addEmpleadoRequest.Cedula" />
-            <MudTextField Label="First Name" @bind-Value="@addEmpleadoRequest.FirstName" />
-            <MudTextField Label="Last Name" @bind-Value="@addEmpleadoRequest.LastName" />
-            <MudTextField Label="Email" @bind-Value="@addEmpleadoRequest.Email" />
-            <MudTextField Label="Username" @bind-Value="@addEmpleadoRequest.Username" />
-            <MudTextField Label="Password" @bind-Value="@addEmpleadoRequest.Password" InputType="InputType.Password" />
-            <MudTextField Label="Salary" @bind-Value="@addEmpleadoRequest.Salary" />
-            <MudSelect Label="Position" @bind-Value="@addEmpleadoRequest.PositionID">
-                @foreach(var pos in position)
-                {
-                    <MudSelectItem Value="@pos.PositionID">@pos.Title</MudSelectItem>
-                    <MudSelectItem Value="@pos.PositionID">@pos.Title </MudSelectItem>
-                }
-            </MudSelect>
-            <MudTextField Label="Access Levels" @bind-Value="@addEmpleadoRequest.AccessLevelsID" />
+            <MudText Typo="Typo.h5" Class="mb-4">Add Employee</MudText>
 
-            <MudButton OnClick="Submit" Color="Color.Primary" Variant="Variant.Filled">Add Employee</MudButton>
+            <MudGrid Spacing="3">
+                <MudItem xs="12" sm="6">
+                    <MudTextField Label="Cedula" @bind-Value="@addEmpleadoRequest.Cedula" Required="true" RequiredError="Cedula is required" />
+                </MudItem>
+                <MudItem xs="12" sm="6">
+                    <MudTextField Label="First Name" @bind-Value="@addEmpleadoRequest.FirstName" Required="true" RequiredError="First Name is required" />
+                </MudItem>
+                <MudItem xs="12" sm="6">
+                    <MudTextField Label="Last Name" @bind-Value="@addEmpleadoRequest.LastName" Required="true" RequiredError="Last Name is required" />
+                </MudItem>
+                <MudItem xs="12" sm="6">
+                    <MudTextField Label="Email" @bind-Value="@addEmpleadoRequest.Email" Required="true" RequiredError="Email is required" />
+                </MudItem>
+
+                <MudItem xs="12" sm="6">
+                    <MudTextField Label="Username" @bind-Value="@addEmpleadoRequest.Username" Required="true" RequiredError="Username is required" />
+                </MudItem>
+                <MudItem xs="12" sm="6">
+                    <MudTextField Label="Password" @bind-Value="@addEmpleadoRequest.Password" InputType="InputType.Password" Required="true" RequiredError="Password is required" />
+                </MudItem>
+
+                <MudItem xs="12" sm="6">
+                    <MudTextField Label="Salary" @bind-Value="@addEmpleadoRequest.Salary" Required="true" RequiredError="Salary is required" />
+                </MudItem>
+                <MudItem xs="12" sm="6">
+                    <MudSelect Label="Position" @bind-Value="@addEmpleadoRequest.PositionID" Required="true" RequiredError="Position is required">
+                        @foreach (var pos in position)
+                        {
+                            <MudSelectItem Value="@pos.PositionID">@pos.Title</MudSelectItem>
+                        }
+                    </MudSelect>
+                </MudItem>
+                <MudItem xs="12">
+                    <MudSelect Label="Acceso" @bind-Value="@addEmpleadoRequest.AccessLevelsID" Required="true" RequiredError="Access Level is required">
+                        @foreach (var access in accessLevels)
+                        {
+                            <MudSelectItem Value="@access.AccessLevelsID">@access.Name</MudSelectItem>
+                        }
+                    </MudSelect>
+                </MudItem>
+            </MudGrid>
+
+            <MudDivider Class="my-3" />
+
+            <MudButton OnClick="Submit" Color="Color.Primary" Variant="Variant.Filled" Class="mt-3" FullWidth="true">Add Employee</MudButton>
         </MudForm>
     </DialogContent>
 </MudDialog>
@@ -31,19 +60,32 @@
     private MudForm form;
     private EmployeeRequest.AddEmployee addEmpleadoRequest = new EmployeeRequest.AddEmployee();
     private IEnumerable<PositionResponse> position = Enumerable.Empty<PositionResponse>();
+    IEnumerable<AccessLevelsResponse> accessLevels = Enumerable.Empty<AccessLevelsResponse>();
     protected override async Task OnInitializedAsync()
     {
         await LoadPosition();
-    } 
+        await LoadAccessLevels();
+    }
+
     private async Task LoadPosition()
     {
         var response = await _serviceP.GetAll();
-        if(response.Success)
+        if (response.Success)
         {
             position = response.Data;
         }
     }
+    async Task LoadAccessLevels()
+    {
+        var response = await _serviceA.GetAll();
+        if (response.Success)
+        {
+            accessLevels = response.Data;
+        }
+    }
+
     private async Task Submit()
     {
+        // Lógica para enviar el formulario
     }
 }

@@ -7,7 +7,7 @@ namespace NexusGroup.Admin.Data.ApiResponse
     {
         public class All : _CoreApiR.ApiResponse
         {
-            IEnumerable<EmployeeResponse> Data { get; set; }
+            public IEnumerable<EmployeeResponse> Data { get; set; }
         }
         public class One : _CoreApiR.ApiResponse
         {

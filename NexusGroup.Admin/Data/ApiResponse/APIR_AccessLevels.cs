@@ -7,11 +7,11 @@ namespace NexusGroup.Admin.Data.ApiResponse
     {
         public class All: _CoreApiR.ApiResponse
         {
-            IEnumerable<AccessLevelsResponse> Data { get; set; }
+            public IEnumerable<AccessLevelsResponse> Data { get; set; }
         }
         public class One : _CoreApiR.ApiResponse
         {
-            AccessLevelsModel Data { get; set; }
+            public AccessLevelsModel Data { get; set; }
         }
     }
 }

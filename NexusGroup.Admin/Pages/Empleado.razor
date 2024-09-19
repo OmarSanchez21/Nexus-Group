@@ -4,6 +4,7 @@
 @inject Data.Token.TokenHelper _token
 <h3>Empleado</h3>
 <MudButton Color="Color.Primary" Variant="Variant.Outlined" StartIcon="@Icons.Material.Filled.Add" IconColor="Color.Secondary" OnClick="OpenAddEmployee"> Open Dialog</MudButton>
+<T_Employees />
 @code {
     [Parameter]
     public string TokenPart { get; set; }

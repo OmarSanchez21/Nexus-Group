@@ -8,7 +8,7 @@ namespace NexusGroup.Admin.Data.ApiServices.Employees
     {
         Task<APIR_Employee.All> GetAll();
         Task<APIR_Employee.One> GetOne(int id);
-        Task<APIR_Employee.One> Save(EmployeeRequest.AddEmployee add);
+        Task<APIR_Employee.One> Add(EmployeeRequest.AddEmployee add);
         Task<APIR_Employee.One> Edit(EmployeeRequest.EditEmployee edit);
     }
 }

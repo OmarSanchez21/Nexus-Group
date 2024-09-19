@@ -84,7 +84,7 @@
     }
     protected override async Task OnInitializedAsync()
     {
-        _tokenCheckTimer = new Timer(async _ => await CheckTokenExpiration(), null, TimeSpan.Zero, TimeSpan.FromMinutes(5));
+        _tokenCheckTimer = new Timer(async _ => await CheckTokenExpiration(), null, TimeSpan.Zero, TimeSpan.FromMinutes(3));
         await Task.CompletedTask;
     }
     protected override async Task OnAfterRenderAsync(bool firstRender)

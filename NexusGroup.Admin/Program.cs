@@ -4,20 +4,24 @@ using NexusGroup.Admin.Data;
 using NexusGroup.Admin.Data.ApiServices;
 using MudBlazor.Services;
 using NexusGroup.Admin.Data.Token;
-using Blazored.SessionStorage;
 using NexusGroup.Admin.Data.ApiServices.Auth;
 using NexusGroup.Admin.Data.ApiServices.Position;
+using Blazored.LocalStorage;
+using NexusGroup.Admin.Data.ApiServices.AccessLevels;
+using NexusGroup.Admin.Data.ApiServices.Employees;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddBlazoredSessionStorage();
+builder.Services.AddBlazoredLocalStorage();
 builder.Services.AddHttpClient();
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
+builder.Services.AddScoped<IAccessLevelsApiService, AccessLevelsApiService>();
 builder.Services.AddScoped<IAuthApiService, AuthApiService>();
 builder.Services.AddSingleton<WeatherForecastService>();
 builder.Services.AddScoped<TokenHelper>();
 builder.Services.AddScoped<IPositionApiService, PositionApiService>();
+builder.Services.AddScoped<IEmployeesApiService, EmployeesApiService>();
 builder.Services.AddMudServices();
 
 

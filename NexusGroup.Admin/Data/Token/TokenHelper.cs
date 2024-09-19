@@ -1,4 +1,4 @@
-﻿using Blazored.SessionStorage;
+﻿using Blazored.LocalStorage;
 using System.IdentityModel.Tokens.Jwt;
 namespace NexusGroup.Admin.Data.Token
 {
@@ -17,18 +17,18 @@ namespace NexusGroup.Admin.Data.Token
     }
     public class TokenHelper
     {
-        private readonly ISessionStorageService _sessionStorageService;
-        public TokenHelper(ISessionStorageService sessionStorageService)
+        private readonly ILocalStorageService _localStorage;
+        public TokenHelper(ILocalStorageService localStorage)
         {
-            _sessionStorageService = sessionStorageService;
+            _localStorage = localStorage;
         }
         public async Task SaveToken(string token)
         {
-            await _sessionStorageService.SetItemAsync("token", token);
+            await _localStorage.SetItemAsync("token", token);
         }
         public async Task<string> GetToken()
         {
-            return await _sessionStorageService.GetItemAsync<string>("token");
+            return await _localStorage.GetItemAsync<string>("token");
         }
         public async Task<JwtToken> GetDecodedToken()
         {
