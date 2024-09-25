@@ -1,0 +1,119 @@
+﻿@inject MudBlazor.IDialogService DialogService
+@inject ISnackbar Snackbar
+@inject Data.ApiServices.Employees.IEmployeesApiService _serviceE
+@inject Data.ApiServices.Position.IPositionApiService _serviceP
+@inject Data.ApiServices.AccessLevels.IAccessLevelsApiService _serviceA
+<MudDialog MaxWidth="MaxWidth.Small">
+    <DialogContent>
+        <MudText Typo="Typo.h5" Class="mb-4">Detalles del Empleado</MudText>
+
+        <MudGrid Spacing="3">
+            <MudItem xs="12" sm="6">
+                <MudText Typo="Typo.subtitle2" Class="fw-bold">Cédula:</MudText>
+                <MudText Typo="Typo.body1">@employeeDetails.Cedula</MudText>
+            </MudItem>
+            <MudItem xs="12" sm="6">
+                <MudText Typo="Typo.subtitle2" Class="fw-bold">Nombre:</MudText>
+                <MudText Typo="Typo.body1">@employeeDetails.FirstName</MudText>
+            </MudItem>
+            <MudItem xs="12" sm="6">
+                <MudText Typo="Typo.subtitle2" Class="fw-bold">Apellido:</MudText>
+                <MudText Typo="Typo.body1">@employeeDetails.LastName</MudText>
+            </MudItem>
+            <MudItem xs="12" sm="6">
+                <MudText Typo="Typo.subtitle2" Class="fw-bold">Email:</MudText>
+                <MudText Typo="Typo.body1">@employeeDetails.Email</MudText>
+            </MudItem>
+            <MudItem xs="12" sm="6">
+                <MudText Typo="Typo.subtitle2" Class="fw-bold">Username:</MudText>
+                <MudText Typo="Typo.body1">@employeeDetails.Username</MudText>
+            </MudItem>
+            <MudItem xs="12" sm="6">
+                <MudText Typo="Typo.subtitle2" Class="fw-bold">Salario:</MudText>
+                <MudText Typo="Typo.body1">@employeeDetails.Salary</MudText>
+            </MudItem>
+            <MudItem xs="12" sm="6">
+                <MudText Typo="Typo.subtitle2" Class="fw-bold">Posición:</MudText>
+                @if(position.Title != null)
+                {
+                    <MudText Typo="Typo.body1">@position.Title</MudText>
+                }
+                else
+                {
+                    <MudText Typo="Typo.body1">No se pudo obtener el position.</MudText>
+                }
+            </MudItem>
+            <MudItem xs="12">
+                <MudText Typo="Typo.subtitle2" Class="fw-bold">Nivel de Acceso:</MudText>
+                @if (accessLevels.Name != null)
+                {
+                    <MudText Typo="Typo.body1">@accessLevels.Name</MudText>
+                }
+                else
+                {
+                    <MudText Typo="Typo.body1">No se pudo obtener el acceso.</MudText>
+                }
+            </MudItem>
+        </MudGrid>
+
+        <MudDivider Class="my-3" />
+
+        <MudButton OnClick="CloseDialog" Color="Color.Primary" Variant="Variant.Filled" Class="mt-3" FullWidth="true">Cerrar</MudButton>
+    </DialogContent>
+</MudDialog>
+
+@code {
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
+    [Parameter] public int EmployeeId { get; set; }
+    private EmpleadoModel employeeDetails = new EmpleadoModel();
+    AccessLevelsModel accessLevels = new AccessLevelsModel();
+    PositionModel position = new PositionModel();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadEmployeeDetails();
+    }
+
+    private async Task LoadEmployeeDetails()
+    {
+        var response = await _serviceE.GetOne(EmployeeId);
+        if (response.Success)
+        {
+            employeeDetails = response.Data;
+            await GetAccessLevel();
+            await GetPosition();
+        }
+        else
+        {
+            Snackbar.Add("Error al cargar los detalles del empleado", Severity.Error);
+        }
+    }
+    async Task GetAccessLevel()
+    {
+        var response = await _serviceA.GetOne(employeeDetails.AccessLevelsID);
+        if (response.Success)
+        {
+            accessLevels = response.Data;
+        }
+        else
+        {
+            Snackbar.Add("Error al cargar el accesso", Severity.Error);
+        }
+    }
+    async Task GetPosition()
+    {
+        var response = await _serviceP.GetOne(employeeDetails.PositionID);
+        if (response.Success)
+        {
+            position = response.Data;
+        }
+        else
+        {
+            Snackbar.Add("Error al cargar el position", Severity.Error);
+        }
+    }
+    private void CloseDialog()
+    {
+        MudDialog.Close(DialogResult.Ok(true));
+    }
+}

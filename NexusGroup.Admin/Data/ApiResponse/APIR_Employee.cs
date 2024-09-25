@@ -11,7 +11,7 @@ namespace NexusGroup.Admin.Data.ApiResponse
         }
         public class One : _CoreApiR.ApiResponse
         {
-            EmpleadoModel Data { get; set; }
+            public EmpleadoModel Data { get; set; }
         }
     }
 }

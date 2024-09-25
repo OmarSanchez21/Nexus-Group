@@ -1,4 +1,5 @@
 ﻿using NexusGroup.Admin.Data.ApiResponse;
+using NexusGroup.Admin.Data.Models;
 using NexusGroup.Admin.Data.Request;
 using NexusGroup.Admin.Data.Response;
 using NexusGroup.Admin.Data.Token;
@@ -75,9 +76,38 @@ namespace NexusGroup.Admin.Data.ApiServices.Position
             return result;
         }
 
-        public Task<APIR_Position.One> GetOne(int id)
+        public async Task<APIR_Position.One> GetOne(int id)
         {
-            throw new NotImplementedException();
+            APIR_Position.One result = new APIR_Position.One();
+            try
+            {
+                string token = await _token.GetToken();
+                var httpClient = _httpClientFactory.CreateClient();
+                httpClient.BaseAddress = new Uri(baseUrl);
+                httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                var httpResponse = await httpClient.GetAsync($"Position/value/{id}");
+                if (httpResponse.StatusCode == HttpStatusCode.InternalServerError)
+                {
+                    result.Success = false;
+                    result.Message = "Internal Error. Pruebe mas tarde";
+                }
+                else
+                {
+                    var content = await httpResponse.Content.ReadFromJsonAsync<APIR_Position.One>();
+                    if (content != null)
+                    {
+                        result = content;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                result.Success = false;
+                result.Message = "Error en la peticion";
+                result.Data = new PositionModel();
+                return result;
+            }
+            return result;
         }
 
         public Task<_CoreApiR.BaseResponse> Recover(int id)

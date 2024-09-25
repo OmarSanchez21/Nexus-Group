@@ -1,9 +1,11 @@
 ﻿@using System.Net.Http.Json
 @using System.Threading
+@inject MudBlazor.IDialogService _dialog
 @inject Data.ApiServices.Employees.IEmployeesApiService _serviceE
+
 <MudDataGrid @ref="dataGrid" T="EmployeeResponse" ServerData="ServerReload" Filterable="false">
     <ToolBarContent>
-        <MudText Typo="Typo.h6">Periodic Elements</MudText>
+        <MudText Typo="Typo.h6">Employee Table</MudText>
         <MudSpacer />
         <MudTextField T="string" ValueChanged="@(s=>OnSearch(s))" Placeholder="Search" Adornment="Adornment.Start"
                       AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
@@ -15,6 +17,11 @@
         <PropertyColumn Property="x => x.LastName" />
         <PropertyColumn Property="x => x.Email" Title="Molar mass" />
         <PropertyColumn Property="x => x.Username" Title="Category" />
+        <TemplateColumn Title="Actions">
+            <CellTemplate>
+                <MudIconButton Icon="@Icons.Material.Outlined.Details" OnClick="@(() => OpenEmployeeDetails(context.Item.EmployeeID))" />
+            </CellTemplate>
+        </TemplateColumn>
     </Columns>
     <PagerContent>
         <MudDataGridPager T="EmployeeResponse" />
@@ -101,4 +108,19 @@
         searchString = text;
         return dataGrid.ReloadServerData();
     }
+    async Task OpenEmployeeDetails(int id)
+    {
+        var parameters = new DialogParameters<DetailsEmployeeDialog>
+        {
+            { x => x.EmployeeId, id}
+        };
+        var options = new DialogOptions
+            {
+                CloseOnEscapeKey = true,
+                CloseButton = true,
+                MaxWidth = MaxWidth.Medium,
+                FullWidth = true
+            };
+        await _dialog.ShowAsync<DetailsEmployeeDialog>("Details Employee", parameters, options);
+    } 
 }

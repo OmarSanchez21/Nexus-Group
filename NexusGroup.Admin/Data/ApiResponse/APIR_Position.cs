@@ -11,7 +11,7 @@ namespace NexusGroup.Admin.Data.ApiResponse
         }
         public class One : _CoreApiR.ApiResponse
         {
-            PositionModel Data { get; set; }
+            public PositionModel Data { get; set; }
         }
     }
 }

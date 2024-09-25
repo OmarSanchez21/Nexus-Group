@@ -62,7 +62,7 @@ namespace NexusGroup.Admin.Data.ApiServices.AccessLevels
                 var httpClient = _httpClientFactory.CreateClient();
                 httpClient.BaseAddress = new Uri(baseUrl);
                 httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-                var httpResponse = await httpClient.GetAsync($"AccessLevels/value{id}");
+                var httpResponse = await httpClient.GetAsync($"AccessLevels/value/{id}");
                 if (httpResponse.StatusCode == System.Net.HttpStatusCode.InternalServerError)
                 {
                     result.Success = false;
