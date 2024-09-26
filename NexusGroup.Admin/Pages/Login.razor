@@ -17,7 +17,9 @@
                               FullWidth
                               Margin="Margin.Dense"
                               @bind-Value="loginModel.Username"
-                              Required />
+                              Required 
+                              AdornmentIcon="@Icons.Material.Outlined.AccountBox"
+                              Adornment="Adornment.Start"/>
 
                 <MudTextField Label="Contraseña"
                               Variant="Variant.Filled"

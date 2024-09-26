@@ -5,6 +5,7 @@ using NexusGroup.Admin.Data.Response;
 using NexusGroup.Admin.Data.Token;
 using System.Net;
 using System.Net.Http.Headers;
+using System.Text.Json;
 
 namespace NexusGroup.Admin.Data.ApiServices.Employees
 {
@@ -21,9 +22,46 @@ namespace NexusGroup.Admin.Data.ApiServices.Employees
             baseUrl = this._configuration["ApiSettings:BaseUrl"];
             _token = tokenHelper;
         }
-        public Task<APIR_Employee.One> Add(EmployeeRequest.AddEmployee add)
+        public async Task<APIR_Employee.One> Add(EmployeeRequest.AddEmployee add)
         {
-            throw new NotImplementedException();
+            APIR_Employee.One result = new APIR_Employee.One();
+            try
+            {
+                var httpClient = _httpClientFactory.CreateClient();
+                httpClient.BaseAddress = new Uri(baseUrl);
+                var httpResponse = await httpClient.PostAsJsonAsync("Employee", add);
+                if (httpResponse.IsSuccessStatusCode)
+                {
+                    var content = await httpResponse.Content.ReadFromJsonAsync<APIR_Employee.One>();
+                    if (content != null)
+                    {
+                        result = content;
+                    }
+                    else
+                    {
+                        result.Success = false;
+                        result.Message = "No se pudo procesar la respuesta del servidor.";
+                    }
+                }
+                else if (httpResponse.StatusCode == HttpStatusCode.InternalServerError)
+                {
+                    result.Success = false;
+                    result.Message = "Error interno. Intenta más tarde.";
+                }
+                else
+                {
+                    result.Success = false;
+                    result.Message = $"Error: {httpResponse.StatusCode}.";
+                }
+            }
+            catch (Exception ex)
+            {
+                result.Success = false;
+                result.Message = $"Error en la peticion\n{ex.Message}";
+                result.Data = new EmpleadoModel();
+                return result;
+            }
+            return result;
         }
         public Task<_CoreApiR.BaseResponse> Delete(int id)
         {
@@ -35,9 +73,46 @@ namespace NexusGroup.Admin.Data.ApiServices.Employees
             throw new NotImplementedException();
         }
 
-        public Task<APIR_Employee.One> Edit(EmployeeRequest.EditEmployee edit)
+        public async Task<APIR_Employee.One> Edit(EmployeeRequest.EditEmployee edit)
         {
-            throw new NotImplementedException();
+            APIR_Employee.One result = new APIR_Employee.One();
+            try
+            {
+                var httpClient = _httpClientFactory.CreateClient();
+                httpClient.BaseAddress = new Uri(baseUrl);
+                var httpResponse = await httpClient.PutAsJsonAsync("Employee", edit);
+                if (httpResponse.IsSuccessStatusCode)
+                {
+                    var content = await httpResponse.Content.ReadFromJsonAsync<APIR_Employee.One>();
+                    if (content != null)
+                    {
+                        result = content;
+                    }
+                    else
+                    {
+                        result.Success = false;
+                        result.Message = "No se pudo procesar la respuesta del servidor.";
+                    }
+                }
+                else if (httpResponse.StatusCode == HttpStatusCode.InternalServerError)
+                {
+                    result.Success = false;
+                    result.Message = "Error interno. Intenta más tarde.";
+                }
+                else
+                {
+                    result.Success = false;
+                    result.Message = $"Error: {httpResponse.StatusCode}.";
+                }
+            }
+            catch (Exception ex)
+            {
+                result.Success = false;
+                result.Message = $"Error en la peticion\n{ex.Message}";
+                result.Data = new EmpleadoModel();
+                return result;
+            }
+            return result;
         }
 
         public async Task<APIR_Employee.All> GetAll()

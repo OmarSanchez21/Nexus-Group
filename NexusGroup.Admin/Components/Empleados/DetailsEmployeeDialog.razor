@@ -1,5 +1,7 @@
 ﻿@inject MudBlazor.IDialogService DialogService
 @inject ISnackbar Snackbar
+@inject NavigationManager _navigation
+@inject Data.Token.TokenHelper _token
 @inject Data.ApiServices.Employees.IEmployeesApiService _serviceE
 @inject Data.ApiServices.Position.IPositionApiService _serviceP
 @inject Data.ApiServices.AccessLevels.IAccessLevelsApiService _serviceA
@@ -57,9 +59,11 @@
         </MudGrid>
 
         <MudDivider Class="my-3" />
-
-        <MudButton OnClick="CloseDialog" Color="Color.Primary" Variant="Variant.Filled" Class="mt-3" FullWidth="true">Cerrar</MudButton>
     </DialogContent>
+    <DialogActions>
+        <MudIconButton Icon="@Icons.Material.Outlined.Edit" ButtonType="ButtonType.Button" OnClick="Editar">Editar</MudIconButton>
+        <MudButton OnClick="CloseDialog" Color="Color.Primary" Variant="Variant.Filled" Class="mt-3" FullWidth="true">Cerrar</MudButton>
+    </DialogActions>
 </MudDialog>
 
 @code {
@@ -111,6 +115,11 @@
         {
             Snackbar.Add("Error al cargar el position", Severity.Error);
         }
+    }
+    async Task Editar()
+    {
+        string tokenpart = await _token.ExtractToken();
+        _navigation.NavigateTo($"/{tokenpart}/home/empleado/{EmployeeId.ToString()}");
     }
     private void CloseDialog()
     {

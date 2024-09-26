@@ -1,0 +1,107 @@
+﻿@page "/{tokenpart}/home/empleado/{id}"
+@inject Data.ApiServices.Employees.IEmployeesApiService _serviceE
+@inject Data.ApiServices.Position.IPositionApiService _serviceP
+@inject Data.ApiServices.AccessLevels.IAccessLevelsApiService _serviceA
+@inject ISnackbar Snackbar
+
+<MudCard>
+    <MudCardHeader>Edit Employee</MudCardHeader>
+    <MudCardContent>
+        <MudGrid Spacing="3">
+            <MudItem xs="12" sm="6">
+                <MudTextField Label="Cédula" @bind-Value="model.Cedula" Disabled="@IsEditing" />
+            </MudItem>
+            <MudItem xs="16" sm="6">
+                <MudTextField Label="Nombre" @bind-Value="model.FirstName" Disabled="@IsEditing" />
+            </MudItem>
+            <MudItem xs="12" sm="6">
+                <MudTextField Label="Apellido" @bind-Value="model.LastName" Disabled="true" />
+            </MudItem>
+            <MudItem xs="12" sm="6">
+                <MudTextField Label="Email" @bind-Value="model.Email" Disabled="true" />
+            </MudItem>
+            <MudItem xs="12" sm="6">
+                <MudTextField Label="Username" @bind-Value="model.Username" Disabled="true" />
+            </MudItem>
+            <MudItem xs="12" sm="6">
+                <MudTextField Label="Salario" @bind-Value="model.Salary" Disabled="true" />
+            </MudItem>
+        </MudGrid>
+    </MudCardContent>
+</MudCard>
+@code {
+    [Parameter] public string TokenPart { get; set; }
+    [Parameter] public string id { get; set; }
+    bool IsEditing = true;
+    EmpleadoModel model = new EmpleadoModel();
+    PositionModel position = new PositionModel();
+    AccessLevelsModel accessLevels = new AccessLevelsModel();
+    IEnumerable<PositionResponse> newpositions = Enumerable.Empty<PositionResponse>();
+    IEnumerable<AccessLevelsResponse> newaccessLevels = Enumerable.Empty<AccessLevelsResponse>();
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadEmployeeDetails();
+    }
+    async Task LoadEmployeeDetails()
+    {
+        var response = await _serviceE.GetOne(int.Parse(id));
+        if (response.Success)
+        {
+            model = response.Data;
+            await LoadPositionandAccess();
+            await LoadPositionsAndAccessLevels();
+        }
+        else
+        {
+            Snackbar.Add("Error en obtener el empleado", Severity.Error);
+        }
+    }
+    async Task LoadPositionsAndAccessLevels()
+    {
+        var positionsResponse = await _serviceP.GetAll();
+        var accessResponse = await _serviceA.GetAll();
+
+        if (positionsResponse.Success)
+        {
+            newpositions = positionsResponse.Data;
+        }
+        else
+        {
+            Snackbar.Add("Failed to load all positions", Severity.Error);
+        }
+
+        if (accessResponse.Success)
+        {
+            newaccessLevels = accessResponse.Data;
+        }
+        else
+        {
+            Snackbar.Add("Failed to load all AccessLevels", Severity.Error);
+        }
+    }
+
+    async Task LoadPositionandAccess()
+    {
+        var posResponse = await _serviceP.GetOne(model.PositionID);
+        var accessResponse = await _serviceA.GetOne(model.AccessLevelsID);
+
+        if (posResponse.Success)
+        {
+            position = posResponse.Data;
+        }
+        else
+        {
+            Snackbar.Add("Failed to load position", Severity.Error);
+        }
+
+        if (accessResponse.Success)
+        {
+            accessLevels = accessResponse.Data;
+        }
+        else
+        {
+            Snackbar.Add("Failed to load AccessLevels", Severity.Error);
+        }
+    }
+
+}
